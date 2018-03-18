@@ -1,5 +1,5 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/Ulbora/ApiGateway)](https://goreportcard.com/report/github.com/Ulbora/ApiGateway)
-[![codecov](https://codecov.io/gh/Ulbora/UlboraAPIGateway/branch/master/graph/badge.svg)](https://codecov.io/gh/Ulbora/UlboraAPIGateway)
+
 [![](https://img.shields.io/docker/build/mariobehling/loklak.svg)](https://hub.docker.com/r/ulboralabs/ulboraapigateway/builds/)
 
 
