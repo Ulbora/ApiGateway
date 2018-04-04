@@ -1,7 +1,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/Ulbora/ApiGateway)](https://goreportcard.com/report/github.com/Ulbora/ApiGateway)
 [![codecov](https://codecov.io/gh/Ulbora/ApiGateway/branch/master/graph/badge.svg)](https://codecov.io/gh/Ulbora/ApiGateway)
 [![](https://img.shields.io/docker/build/mariobehling/loklak.svg)](https://hub.docker.com/r/ulboralabs/ulboraapigateway/builds/)
-
+[![Maintainability](https://api.codeclimate.com/v1/badges/222968c53724d45d68be/maintainability)](https://codeclimate.com/github/Ulbora/ApiGateway/maintainability)
 
 
 API Gateway (runs inside customer's network)
