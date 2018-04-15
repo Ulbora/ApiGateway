@@ -20,9 +20,9 @@ type GatewayClusterRouteURL struct {
 	FailoverRouteName string `json:"failoverRouteName"`
 }
 
-//GetClusterGwRoutes GetClusterGwRoutes
-func (gw *GatewayRoutes) GetClusterGwRoutes() *[]GatewayClusterRouteURL {
-	var rtn = make([]GatewayClusterRouteURL, 0)
+// //GetClusterGwRoutes GetClusterGwRoutes
+// func (gw *GatewayRoutes) GetClusterGwRoutes() *[]GatewayClusterRouteURL {
+// 	var rtn = make([]GatewayClusterRouteURL, 0)
 
-	return &rtn
-}
+// 	return &rtn
+// }
