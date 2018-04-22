@@ -36,9 +36,9 @@ func TestGatewayErrors_SaveErrors(t *testing.T) {
 	el.RouteURIID = 33
 	el.Message = "error from cluster gateway api"
 	resp, code := e.SaveErrors(el)
-	fmt.Print("resp in clear cluster: ")
+	fmt.Print("resp in error cluster: ")
 	fmt.Println(resp)
-	fmt.Print("code in clear cluster: ")
+	fmt.Print("code in error cluster: ")
 	fmt.Println(code)
 	if code != 200 || !resp.Success {
 		t.Fail()
