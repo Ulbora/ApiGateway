@@ -163,3 +163,42 @@ func Test_getJSONEncode(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func Test_ProcessServiceCallUrl(t *testing.T) {
+	var p GatewayClusterRouteURL
+	//var gw GatewayRoutes
+	req, _ := http.NewRequest("POST", "", nil)
+	code := ProcessServiceCall(req, &p)
+	fmt.Print("req code:")
+	fmt.Println(code)
+	//fmt.Print("req suc:")
+	//fmt.Println(err)
+	if code != 400 {
+		t.Fail()
+	}
+}
+
+func Test_ProcessServiceCall(t *testing.T) {
+	//var p GatewayClusterRouteURL
+	var rtn = make([]GatewayClusterRouteURL, 0)
+	//var gw GatewayRoutes
+	//gw.ClientID = 403
+	//gw.APIKey = "403"
+	req, _ := http.NewRequest("GET", "http://localhost:3011/rs/cluster/routes/challenge", nil)
+	//cid := strconv.FormatInt(gw.ClientID, 10)
+	req.Header.Set("u-client-id", "403")
+	req.Header.Set("u-api-key", "403")
+	code := ProcessServiceCall(req, &rtn)
+	fmt.Print("req code in processCall:")
+	fmt.Println(code)
+	fmt.Print("req failed in processCall:")
+	//fmt.Println(failed)
+	if code != 200 {
+		t.Fail()
+	}
+	fmt.Print("rtn in processCall:")
+	fmt.Println(rtn)
+	if len(rtn) == 0 {
+		t.Fail()
+	}
+}

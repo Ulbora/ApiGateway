@@ -46,7 +46,7 @@ func (gw *GatewayRoutes) GetClusterGwRoutes(route string) (*[]GatewayClusterRout
 		cid := strconv.FormatInt(gw.ClientID, 10)
 		req.Header.Set("u-client-id", cid)
 		req.Header.Set("u-api-key", gw.APIKey)
-		code = gw.ProcessServiceCall(req, &rtn)
+		code = cm.ProcessServiceCall(req, &rtn)
 	} else {
 		fmt.Println("get failed")
 		code = http.StatusBadRequest
@@ -67,27 +67,10 @@ func (gw *GatewayRoutes) ClearClusterGwRoutes(route string) (*GatewayClusterResp
 		cid := strconv.FormatInt(gw.ClientID, 10)
 		req.Header.Set("u-client-id", cid)
 		req.Header.Set("u-api-key", gw.APIKey)
-		code = gw.ProcessServiceCall(req, &rtn)
+		code = cm.ProcessServiceCall(req, &rtn)
 	} else {
 		fmt.Println("clear failed")
 		code = http.StatusBadRequest
 	}
 	return &rtn, code
-}
-
-//ProcessServiceCall ProcessCall
-func (gw *GatewayRoutes) ProcessServiceCall(req *http.Request, obj interface{}) int {
-	var code int
-	client := &http.Client{}
-	resp, cErr := client.Do(req)
-	if cErr != nil {
-		fmt.Print("Service err: ")
-		fmt.Println(cErr)
-		code = http.StatusBadRequest
-	} else {
-		defer resp.Body.Close()
-		cm.ProcessRespose(resp, obj)
-		code = resp.StatusCode
-	}
-	return code
 }

@@ -72,3 +72,20 @@ func GetJSONEncode(obj interface{}) *[]byte {
 	aJSON, _ := json.Marshal(obj)
 	return &aJSON
 }
+
+//ProcessServiceCall ProcessCall
+func ProcessServiceCall(req *http.Request, obj interface{}) int {
+	var code int
+	client := &http.Client{}
+	resp, cErr := client.Do(req)
+	if cErr != nil {
+		fmt.Print("Service err: ")
+		fmt.Println(cErr)
+		code = http.StatusBadRequest
+	} else {
+		defer resp.Body.Close()
+		ProcessRespose(resp, obj)
+		code = resp.StatusCode
+	}
+	return code
+}
