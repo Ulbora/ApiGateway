@@ -9,10 +9,10 @@ import (
 	//"strconv"
 )
 
-//ServiceParam ServiceParam
-type ServiceParam interface {
-	GetType() string
-}
+// //ServiceParam ServiceParam
+// type ServiceParam interface {
+// 	GetType() string
+// }
 
 //GetRequest GetRequest
 func GetRequest(url string, method string, obj *[]byte) (*http.Request, bool) {
@@ -56,8 +56,8 @@ func ProcessRespose(resp *http.Response, obj interface{}) bool {
 		var err error
 		if obj != nil {
 			err = decoder.Decode(obj)
-			fmt.Print("response obj err: ")
-			fmt.Println(err)
+			fmt.Print("response obj: ")
+			fmt.Println(obj)
 		}
 		if err != nil {
 			fmt.Print("response err: ")

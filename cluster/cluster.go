@@ -1,6 +1,7 @@
 package cluster
 
 import (
+	"strconv"
 	//by "bytes"
 	//"encoding/json"
 	"fmt"
@@ -15,6 +16,7 @@ type GatewayRoutes struct {
 	Route    string
 	APIKey   string
 	ClientID int64
+	Host     string
 }
 
 // //ServiceParam ServiceParam
@@ -35,21 +37,63 @@ type GatewayClusterRouteURL struct {
 	FailoverRouteName string `json:"failoverRouteName"`
 }
 
-//GetType GetType
-func (gw *GatewayClusterRouteURL) GetType() string {
-	return "GCRouteURL"
+//GatewayClusterResponse ClusterResponse
+type GatewayClusterResponse struct {
+	Success bool `json:"success"`
 }
 
-// //GetClusterGwRoutes GetClusterGwRoutes
-// func (gw *GatewayRoutes) GetClusterGwRoutes() *[]GatewayClusterRouteURL {
-// 	var rtn = make([]GatewayClusterRouteURL, 0)
-// 	return &rtn
+// //GetType GetType
+// func (gw *GatewayClusterRouteURL) GetType() string {
+// 	return "GCRouteURL"
 // }
 
-//ProcessServiceCall ProcessCall
-func (gw *GatewayRoutes) ProcessServiceCall(req *http.Request, obj interface{}) (int, bool) {
+//GetClusterGwRoutes GetClusterGwRoutes
+func (gw *GatewayRoutes) GetClusterGwRoutes(route string) (*[]GatewayClusterRouteURL, int) {
 	var code int
-	var err bool
+	var rtn = make([]GatewayClusterRouteURL, 0)
+	var clustURL = gw.Host + "/rs/cluster/routes/" + route
+	fmt.Print("clustURL: ")
+	fmt.Println(clustURL)
+	req, fail := cm.GetRequest(clustURL, http.MethodGet, nil)
+	if !fail {
+		//var f2 bool
+		cid := strconv.FormatInt(gw.ClientID, 10)
+		req.Header.Set("u-client-id", cid)
+		req.Header.Set("u-api-key", gw.APIKey)
+		code = gw.ProcessServiceCall(req, &rtn)
+	} else {
+		fmt.Println("get failed")
+		code = http.StatusBadRequest
+	}
+	return &rtn, code
+}
+
+//ClearClusterGwRoutes ClearClusterGwRoutes
+func (gw *GatewayRoutes) ClearClusterGwRoutes(route string) (*GatewayClusterResponse, int) {
+	var code int
+	//var rtn = make([]GatewayClusterRouteURL, 0)
+	var rtn GatewayClusterResponse
+	var clustURL = gw.Host + "/rs/cluster/routes/clear/" + route
+	fmt.Print("clustURL: ")
+	fmt.Println(clustURL)
+	req, fail := cm.GetRequest(clustURL, http.MethodDelete, nil)
+	if !fail {
+		//var f2 bool
+		cid := strconv.FormatInt(gw.ClientID, 10)
+		req.Header.Set("u-client-id", cid)
+		req.Header.Set("u-api-key", gw.APIKey)
+		code = gw.ProcessServiceCall(req, &rtn)
+	} else {
+		fmt.Println("clear failed")
+		code = http.StatusBadRequest
+	}
+	return &rtn, code
+}
+
+//ProcessServiceCall ProcessCall
+func (gw *GatewayRoutes) ProcessServiceCall(req *http.Request, obj interface{}) int {
+	var code int
+	//var err bool
 	//cid := strconv.FormatInt(gw.ClientID, 10)
 	//req.Header.Set("u-client-id", cid)
 	//req.Header.Set("u-api-key", gw.APIKey)
@@ -61,18 +105,21 @@ func (gw *GatewayRoutes) ProcessServiceCall(req *http.Request, obj interface{}) 
 	if cErr != nil {
 		fmt.Print("Service err: ")
 		fmt.Println(cErr)
-		err = true
+		//err = true
+		code = http.StatusBadRequest
 	} else {
 		defer resp.Body.Close()
-		suc := cm.ProcessRespose(resp, obj)
-		if suc {
-			code = resp.StatusCode
-		}
+		cm.ProcessRespose(resp, obj)
+		//if suc {
+		code = resp.StatusCode
+		//} else {
+		//code = resp.StatusCode
+		//}
 		// decoder := json.NewDecoder(resp.Body)
 		// error := decoder.Decode(&obj)
 		// if error != nil {
 		// 	log.Println(error.Error())
 		// }
 	}
-	return code, err
+	return code //, err
 }
