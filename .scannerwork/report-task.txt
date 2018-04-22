@@ -3,5 +3,5 @@ projectKey=apigateway
 serverUrl=https://sonarcloud.io
 serverVersion=7.1.1.10702
 dashboardUrl=https://sonarcloud.io/dashboard/index/apigateway
-ceTaskId=AWLuwwO-X0BbYiea-_P2
-ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AWLuwwO-X0BbYiea-_P2
+ceTaskId=AWLu6sCWXt8T3cY7QbKX
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AWLu6sCWXt8T3cY7QbKX
