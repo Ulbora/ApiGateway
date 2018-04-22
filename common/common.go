@@ -6,13 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	//"strconv"
 )
-
-// //ServiceParam ServiceParam
-// type ServiceParam interface {
-// 	GetType() string
-// }
 
 //GetRequest GetRequest
 func GetRequest(url string, method string, obj *[]byte) (*http.Request, bool) {

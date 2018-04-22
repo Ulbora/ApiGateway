@@ -1,14 +1,10 @@
 package cluster
 
 import (
-	"strconv"
-	//by "bytes"
-	//"encoding/json"
-	"fmt"
-	//"log"
 	cm "ApiGateway/common"
+	"fmt"
 	"net/http"
-	//"strconv"
+	"strconv"
 )
 
 //GatewayRoutes gateway routes
@@ -18,11 +14,6 @@ type GatewayRoutes struct {
 	ClientID int64
 	Host     string
 }
-
-// //ServiceParam ServiceParam
-// type ServiceParam interface {
-// 	GetType() string
-// }
 
 //GatewayClusterRouteURL url
 type GatewayClusterRouteURL struct {
@@ -41,11 +32,6 @@ type GatewayClusterRouteURL struct {
 type GatewayClusterResponse struct {
 	Success bool `json:"success"`
 }
-
-// //GetType GetType
-// func (gw *GatewayClusterRouteURL) GetType() string {
-// 	return "GCRouteURL"
-// }
 
 //GetClusterGwRoutes GetClusterGwRoutes
 func (gw *GatewayRoutes) GetClusterGwRoutes(route string) (*[]GatewayClusterRouteURL, int) {
@@ -78,7 +64,6 @@ func (gw *GatewayRoutes) ClearClusterGwRoutes(route string) (*GatewayClusterResp
 	fmt.Println(clustURL)
 	req, fail := cm.GetRequest(clustURL, http.MethodDelete, nil)
 	if !fail {
-		//var f2 bool
 		cid := strconv.FormatInt(gw.ClientID, 10)
 		req.Header.Set("u-client-id", cid)
 		req.Header.Set("u-api-key", gw.APIKey)
@@ -93,33 +78,16 @@ func (gw *GatewayRoutes) ClearClusterGwRoutes(route string) (*GatewayClusterResp
 //ProcessServiceCall ProcessCall
 func (gw *GatewayRoutes) ProcessServiceCall(req *http.Request, obj interface{}) int {
 	var code int
-	//var err bool
-	//cid := strconv.FormatInt(gw.ClientID, 10)
-	//req.Header.Set("u-client-id", cid)
-	//req.Header.Set("u-api-key", gw.APIKey)
-	//if req.Method == http.MethodPost || req.Method == http.MethodPut {
-	//req.Header.Set("Content-Type", "application/json")
-	//}
 	client := &http.Client{}
 	resp, cErr := client.Do(req)
 	if cErr != nil {
 		fmt.Print("Service err: ")
 		fmt.Println(cErr)
-		//err = true
 		code = http.StatusBadRequest
 	} else {
 		defer resp.Body.Close()
 		cm.ProcessRespose(resp, obj)
-		//if suc {
 		code = resp.StatusCode
-		//} else {
-		//code = resp.StatusCode
-		//}
-		// decoder := json.NewDecoder(resp.Body)
-		// error := decoder.Decode(&obj)
-		// if error != nil {
-		// 	log.Println(error.Error())
-		// }
 	}
-	return code //, err
+	return code
 }
