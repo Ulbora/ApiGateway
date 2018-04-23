@@ -17,15 +17,34 @@ type GatewayRoutes struct {
 
 //GatewayClusterRouteURL url
 type GatewayClusterRouteURL struct {
-	RouteID           int64  `json:"routeId"`
-	Route             string `json:"route"`
-	URLID             int64  `json:"urlId"`
-	Name              string `json:"name"`
-	URL               string `json:"url"`
-	Active            bool   `json:"active"`
-	CircuitOpen       bool   `json:"circuitOpen"`
-	OpenFailCode      int    `json:"openFailCode"`
-	FailoverRouteName string `json:"failoverRouteName"`
+	RouteID                int64  `json:"routeId"`
+	Route                  string `json:"route"`
+	URLID                  int64  `json:"urlId"`
+	Name                   string `json:"name"`
+	URL                    string `json:"url"`
+	Active                 bool   `json:"active"`
+	CircuitOpen            bool   `json:"circuitOpen"`
+	OpenFailCode           int    `json:"openFailCode"`
+	FailoverRouteName      string `json:"failoverRouteName"`
+	FailureThreshold       int    `json:"failureThreshold"`
+	HealthCheckTimeSeconds int    `json:"healthCheckTimeSeconds"`
+}
+
+//Breaker Breaker
+type Breaker struct {
+	FailureThreshold       int    `json:"failureThreshold"`
+	HealthCheckTimeSeconds int    `json:"healthCheckTimeSeconds"`
+	FailoverRouteName      string `json:"failoverRouteName"`
+	OpenFailCode           int    `json:"openFailCode"`
+	RouteURIID             int64  `json:"routeUriId"`
+	RestRouteID            int64  `json:"routeId"`
+	ClientID               int64  `json:"clientId"`
+}
+
+//ResetBreaker ResetBreaker
+type ResetBreaker struct {
+	RouteURIID int64  `json:"routeUriId"`
+	Route      string `json:"route"`
 }
 
 //GatewayClusterResponse ClusterResponse
@@ -70,6 +89,50 @@ func (gw *GatewayRoutes) ClearClusterGwRoutes(route string) (*GatewayClusterResp
 		code = cm.ProcessServiceCall(req, &rtn)
 	} else {
 		fmt.Println("clear failed")
+		code = http.StatusBadRequest
+	}
+	return &rtn, code
+}
+
+//TripBreaker TripBreaker
+func (gw *GatewayRoutes) TripBreaker(obj interface{}) (*GatewayClusterResponse, int) {
+	var code int
+	var rtn GatewayClusterResponse
+	var tpURL = gw.Host + "/rs/cluster/route/trip"
+	fmt.Print("tpURL: ")
+	fmt.Println(tpURL)
+	j := cm.GetJSONEncode(obj)
+	req, fail := cm.GetRequest(tpURL, http.MethodPost, j)
+	if !fail {
+		cid := strconv.FormatInt(gw.ClientID, 10)
+		req.Header.Set("u-client-id", cid)
+		req.Header.Set("u-api-key", gw.APIKey)
+		req.Header.Set("Content-Type", "application/json")
+		code = cm.ProcessServiceCall(req, &rtn)
+	} else {
+		fmt.Println("trip breaker failed")
+		code = http.StatusBadRequest
+	}
+	return &rtn, code
+}
+
+//ResetBreaker ResetBreaker
+func (gw *GatewayRoutes) ResetBreaker(obj interface{}) (*GatewayClusterResponse, int) {
+	var code int
+	var rtn GatewayClusterResponse
+	var rURL = gw.Host + "/rs/cluster/route/reset"
+	fmt.Print("rURL: ")
+	fmt.Println(rURL)
+	j := cm.GetJSONEncode(obj)
+	req, fail := cm.GetRequest(rURL, http.MethodPost, j)
+	if !fail {
+		cid := strconv.FormatInt(gw.ClientID, 10)
+		req.Header.Set("u-client-id", cid)
+		req.Header.Set("u-api-key", gw.APIKey)
+		req.Header.Set("Content-Type", "application/json")
+		code = cm.ProcessServiceCall(req, &rtn)
+	} else {
+		fmt.Println("trip breaker failed")
 		code = http.StatusBadRequest
 	}
 	return &rtn, code
