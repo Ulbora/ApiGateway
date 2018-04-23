@@ -1,0 +1,5 @@
+mode: set
+ApiGateway/managers/gatewayManager.go:30.93,37.17 7 1
+ApiGateway/managers/gatewayManager.go:42.2,42.16 1 1
+ApiGateway/managers/gatewayManager.go:37.17,39.3 0 0
+ApiGateway/managers/gatewayManager.go:39.3,41.3 0 1
