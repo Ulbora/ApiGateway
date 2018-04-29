@@ -1,7 +1,7 @@
 package managers
 
 import (
-	"fmt"
+	//"fmt"
 	"os"
 	"strconv"
 	//cl "ApiGateway/cluster"
@@ -35,27 +35,12 @@ func (gw *GatewayRoutes) GetGatewayRoute(getActive bool, route string, routeName
 	var rtnVal GatewayRouteURL
 	var rtn *[]cl.GatewayClusterRouteURL
 	crts := gw.Cache.GetRoutes(route)
-	fmt.Print("crts: ")
-	fmt.Println(crts)
+	//fmt.Print("crts: ")
+	//fmt.Println(crts)
 	if crts != nil {
 		// work with cached routes and the delete
 		rtn = crts
-		fmt.Print("CacheRefreshRate before if: ")
-		fmt.Println(gw.CacheRefreshRate)
-		fmt.Print("getCacheRefreshRate before if: ")
-		fmt.Println(getCacheRefreshRate())
-		if gw.CacheRefreshRate >= getCacheRefreshRate() {
-			gw.CacheRefreshRate = 0
-			fmt.Print("CacheRefreshRate: ")
-			fmt.Println(gw.CacheRefreshRate)
-			go func(gwr *GatewayRoutes, rt string) {
-				gwr.readAndStore(rt)
-			}(gw, route)
-		} else {
-			gw.CacheRefreshRate++
-			fmt.Print("CacheRefreshRate: ")
-			fmt.Println(gw.CacheRefreshRate)
-		}
+		gw.handleRefresh(route)
 	} else {
 		rtn = gw.readAndStore(route)
 		//fmt.Print("code: ")
@@ -117,8 +102,27 @@ func (gw *GatewayRoutes) readAndStore(route string) *[]cl.GatewayClusterRouteURL
 	clst.APIKey = gw.APIKey
 	clst.Host = getAPIGatewayURL()
 	rtn, _ := clst.GetClusterGwRoutes(route)
-	fmt.Print("resp: ")
-	fmt.Println(rtn)
+	//fmt.Print("resp: ")
+	//fmt.Println(rtn)
 	gw.Cache.SaveRoutes(route, rtn)
 	return rtn
+}
+
+func (gw *GatewayRoutes) handleRefresh(route string) {
+	//fmt.Print("CacheRefreshRate before if: ")
+	//fmt.Println(gw.CacheRefreshRate)
+	//fmt.Print("getCacheRefreshRate before if: ")
+	//fmt.Println(getCacheRefreshRate())
+	if gw.CacheRefreshRate >= getCacheRefreshRate() {
+		gw.CacheRefreshRate = 0
+		//fmt.Print("CacheRefreshRate: ")
+		//fmt.Println(gw.CacheRefreshRate)
+		go func(gwr *GatewayRoutes, rt string) {
+			gwr.readAndStore(rt)
+		}(gw, route)
+	} else {
+		gw.CacheRefreshRate++
+		//fmt.Print("CacheRefreshRate: ")
+		//fmt.Println(gw.CacheRefreshRate)
+	}
 }
