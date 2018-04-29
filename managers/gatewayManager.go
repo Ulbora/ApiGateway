@@ -3,7 +3,7 @@ package managers
 import (
 	"fmt"
 	"os"
-	//"strconv"
+	"strconv"
 	//cl "ApiGateway/cluster"
 	ch "ApiGateway/cache"
 	cl "ApiGateway/cluster"
@@ -11,10 +11,11 @@ import (
 
 //GatewayRoutes gateway routes
 type GatewayRoutes struct {
-	Route    string
-	APIKey   string
-	ClientID int64
-	Cache    ch.RouteCache
+	Route            string
+	APIKey           string
+	ClientID         int64
+	Cache            ch.RouteCache
+	CacheRefreshRate int
 }
 
 //GatewayRouteURL url
@@ -39,9 +40,22 @@ func (gw *GatewayRoutes) GetGatewayRoute(getActive bool, route string, routeName
 	if crts != nil {
 		// work with cached routes and the delete
 		rtn = crts
-		go func(gwr *GatewayRoutes, rt string) {
-			gwr.readAndStore(rt)
-		}(gw, route)
+		fmt.Print("CacheRefreshRate before if: ")
+		fmt.Println(gw.CacheRefreshRate)
+		fmt.Print("getCacheRefreshRate before if: ")
+		fmt.Println(getCacheRefreshRate())
+		if gw.CacheRefreshRate >= getCacheRefreshRate() {
+			gw.CacheRefreshRate = 0
+			fmt.Print("CacheRefreshRate: ")
+			fmt.Println(gw.CacheRefreshRate)
+			go func(gwr *GatewayRoutes, rt string) {
+				gwr.readAndStore(rt)
+			}(gw, route)
+		} else {
+			gw.CacheRefreshRate++
+			fmt.Print("CacheRefreshRate: ")
+			fmt.Println(gw.CacheRefreshRate)
+		}
 	} else {
 		rtn = gw.readAndStore(route)
 		//fmt.Print("code: ")
@@ -71,6 +85,15 @@ func getAPIGatewayURL() string {
 		rtn = os.Getenv("API_GATEWAY")
 	} else {
 		rtn = "http://localhost:3011"
+	}
+	return rtn
+}
+
+func getCacheRefreshRate() int {
+	var rtn = 10
+	if os.Getenv("CACHE_REFRESH_RATE") != "" {
+		rr := os.Getenv("CACHE_REFRESH_RATE")
+		rtn, _ = strconv.Atoi(rr)
 	}
 	return rtn
 }

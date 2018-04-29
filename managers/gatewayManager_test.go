@@ -11,10 +11,12 @@ import (
 )
 
 var c ch.RouteCache
+var gw GatewayRoutes
 
 func TestGatewayRoutes_GetGatewayRoutes(t *testing.T) {
 	//var c ch.RouteCache
-	var gw GatewayRoutes
+	//var gw GatewayRoutes
+	os.Setenv("CACHE_REFRESH_RATE", "2")
 	gw.ClientID = 403
 	gw.APIKey = "403"
 	c.ClientID = strconv.FormatInt(gw.ClientID, 10)
@@ -28,7 +30,7 @@ func TestGatewayRoutes_GetGatewayRoutes(t *testing.T) {
 }
 
 func TestGatewayRoutes_GetGatewayRoutesNotActive(t *testing.T) {
-	var gw GatewayRoutes
+	//var gw GatewayRoutes
 	gw.ClientID = 403
 	gw.APIKey = "403"
 	c.ClientID = strconv.FormatInt(gw.ClientID, 10)
@@ -48,8 +50,51 @@ func TestGatewayRoutes_GetGatewayRoutesNotActive(t *testing.T) {
 	}
 }
 
+func TestGatewayRoutes_GetGatewayRoutesNotActive2(t *testing.T) {
+	//var gw GatewayRoutes
+	gw.ClientID = 403
+	gw.APIKey = "403"
+	c.ClientID = strconv.FormatInt(gw.ClientID, 10)
+	gw.Cache = c
+	chrt := gw.GetGatewayRoute(false, "challenge", "blue")
+	fmt.Print("route: ")
+	fmt.Println(chrt)
+	time.Sleep(time.Second * 2)
+	cr := c.GetRoutes("challenge")
+	fmt.Print("cashed routes after read: ")
+	fmt.Println(cr)
+	if len(*cr) == 0 {
+		t.Fail()
+	}
+	if chrt.Active {
+		t.Fail()
+	}
+}
+
+func TestGatewayRoutes_GetGatewayRoutesNotActive3(t *testing.T) {
+	//var gw GatewayRoutes
+	gw.ClientID = 403
+	gw.APIKey = "403"
+	c.ClientID = strconv.FormatInt(gw.ClientID, 10)
+	gw.Cache = c
+	chrt := gw.GetGatewayRoute(false, "challenge", "blue")
+	fmt.Print("route: ")
+	fmt.Println(chrt)
+	time.Sleep(time.Second * 2)
+	cr := c.GetRoutes("challenge")
+	fmt.Print("cashed routes after read: ")
+	fmt.Println(cr)
+	os.Setenv("CACHE_REFRESH_RATE", "")
+	if len(*cr) == 0 {
+		t.Fail()
+	}
+	if chrt.Active {
+		t.Fail()
+	}
+}
+
 func TestGatewayRoutes_readAndStore(t *testing.T) {
-	var gw GatewayRoutes
+	//var gw GatewayRoutes
 	gw.ClientID = 403
 	gw.APIKey = "403"
 	c.ClientID = strconv.FormatInt(gw.ClientID, 10)
@@ -93,5 +138,21 @@ func Test_parseGatewayRoutes(t *testing.T) {
 		res.Route != "challenge" || res.RouteID != 1 || res.URL != "test1" || res.URLID != 1 {
 		t.Fail()
 	}
+}
 
+func Test_getCacheRefreshRate(t *testing.T) {
+	h := getCacheRefreshRate()
+	if h != 10 {
+		t.Fail()
+	}
+}
+
+func Test_getCacheRefreshRateEV(t *testing.T) {
+	os.Setenv("CACHE_REFRESH_RATE", "20")
+	h := getCacheRefreshRate()
+	fmt.Print("refresh rate: ")
+	fmt.Println(h)
+	if h != 20 {
+		t.Fail()
+	}
 }
