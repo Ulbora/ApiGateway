@@ -47,9 +47,9 @@ func (gw *GatewayRoutes) GetGatewayRoute(getActive bool, route string, routeName
 		//fmt.Print("code: ")
 		//fmt.Println(code)
 	}
-	if len(*rtn) > 0 && getActive == true {
+	if len(*rtn) > 0 && getActive {
 		for r := range *rtn {
-			if (*rtn)[r].Active == true {
+			if (*rtn)[r].Active {
 				rtnVal = parseGatewayRoutes((*rtn)[r])
 				break
 			}
