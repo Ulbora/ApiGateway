@@ -43,7 +43,7 @@ func (gw *GatewayRoutes) GetGatewayRoute(getActive bool, route string, routeName
 			gwr.readAndStore(rt)
 		}(gw, route)
 	} else {
-		rtn = gw.readAndStore(route)		
+		rtn = gw.readAndStore(route)
 		//fmt.Print("code: ")
 		//fmt.Println(code)
 	}
