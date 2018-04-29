@@ -1,7 +1,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/Ulbora/ApiGateway)](https://goreportcard.com/report/github.com/Ulbora/ApiGateway)
 [![](https://img.shields.io/docker/build/mariobehling/loklak.svg)](https://hub.docker.com/r/ulboralabs/ulboraapigateway/builds/)
 [![sqale_rating](https://sonarcloud.io/api/project_badges/measure?project=apigateway&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=apigateway)
-[![coverage](https://sonarcloud.io/api/project_badges/measure?project=apigateway&metric=coverage)](https://sonarcloud.io/dashboard?id=apigateway)
+[![coverage1](https://sonarcloud.io/api/project_badges/measure?project=apigateway&metric=coverage)](https://sonarcloud.io/dashboard?id=apigateway)
 
 
 API Gateway (runs inside customer's network)
