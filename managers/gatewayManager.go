@@ -20,14 +20,17 @@ type GatewayRoutes struct {
 
 //GatewayRouteURL url
 type GatewayRouteURL struct {
-	RouteID      int64  `json:"routeId"`
-	Route        string `json:"route"`
-	URLID        int64  `json:"urlId"`
-	Name         string `json:"name"`
-	URL          string `json:"url"`
-	Active       bool   `json:"active"`
-	CircuitOpen  bool   `json:"circuitOpen"`
-	OpenFailCode int    `json:"openFailCode"`
+	RouteID                int64  `json:"routeId"`
+	Route                  string `json:"route"`
+	URLID                  int64  `json:"urlId"`
+	Name                   string `json:"name"`
+	URL                    string `json:"url"`
+	Active                 bool   `json:"active"`
+	CircuitOpen            bool   `json:"circuitOpen"`
+	OpenFailCode           int    `json:"openFailCode"`
+	FailoverRouteName      string `json:"failoverRouteName"`
+	FailureThreshold       int    `json:"failureThreshold"`
+	HealthCheckTimeSeconds int    `json:"healthCheckTimeSeconds"`
 }
 
 //GetGatewayRoute GetGatewayRoute
@@ -93,6 +96,9 @@ func parseGatewayRoutes(rt cl.GatewayClusterRouteURL) GatewayRouteURL {
 	rtn.RouteID = rt.RouteID
 	rtn.URL = rt.URL
 	rtn.URLID = rt.URLID
+	rtn.FailoverRouteName = rt.FailoverRouteName
+	rtn.FailureThreshold = rt.FailureThreshold
+	rtn.HealthCheckTimeSeconds = rt.HealthCheckTimeSeconds
 	return rtn
 }
 

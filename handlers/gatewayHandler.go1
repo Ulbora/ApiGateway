@@ -1,0 +1,101 @@
+package handlers
+
+import (
+	cst "ApiGateway/cluster"
+	e "ApiGateway/errors"
+	mgr "ApiGateway/managers"
+	pm "ApiGateway/performance"
+	"fmt"
+	"github.com/gorilla/mux"
+	"net/http"
+	"time"
+)
+
+//HandleGwRoute HandleGwRoute
+func (h *Handler) HandleGwRoute(w http.ResponseWriter, r *http.Request) {
+	var rtn string
+	var rtnCode int
+	var gw mgr.GatewayRoutes
+	gw.APIKey = h.APIKey
+	gw.Cache = h.Cache
+	gw.ClientID = h.ClientID
+
+	var sTime1 = time.Now()
+	var sTime2 time.Time
+	var eTime1 time.Time
+	var eTime2 time.Time
+
+	var route string
+	var rName string
+	var fpath string
+
+	vars := mux.Vars(r)
+	if vars != nil {
+		route = vars["route"]
+		rName = vars["rname"]
+		fpath = vars["fpath"]
+	} else {
+		route = r.URL.Query().Get("route")
+		rName = r.URL.Query().Get("rname")
+		fpath = r.URL.Query().Get("fpath")
+	}
+	code := r.URL.Query()
+	var activeRoute = true
+	if rName != "" {
+		activeRoute = false
+	}
+	rts := gw.GetGatewayRoute(activeRoute, route, rName)
+	if rts.URL == "" {
+		fmt.Println("No route found in gateway")
+		rtnCode = rts.OpenFailCode
+		rtn = "bad route"
+		//fmt.Print("found routes: ")
+		//fmt.Println(rts)
+	} else if rts.CircuitOpen {
+		fmt.Println("Circuit breaker is open for this route")
+		rtnCode = rts.OpenFailCode
+		rtn = "Circuit open"
+		//fmt.Print("found route: ")
+		//fmt.Println(rts)
+	} else {
+		var clstRt cst.GatewayRoutes
+		var er e.GatewayErrors
+		var p passParams
+		p.clst = &clstRt
+		p.code = &code
+		p.fpath = fpath
+		p.gwr = &gw
+		p.h = h
+		p.r = r
+		p.e = &er
+		p.rts = rts
+		p.w = w
+		switch r.Method {
+
+		}
+	}
+
+	eTime2 = time.Now()
+	dif1 := eTime1.Sub(sTime1)
+	dif2 := eTime2.Sub(sTime2)
+	tots := dif1.Seconds() + dif2.Seconds()
+	//sec := dif.Seconds()
+	//fmt.Print("latency sec: ")
+	//fmt.Println(tots)
+	pms := (tots * 1000000)
+	//fmt.Print("latency micros: ")
+	//fmt.Println(pms)
+	rms := int64(pms + .5)
+
+	var m pm.GatewayMonitor
+	m.ClientID = h.ClientID
+	m.Host = getAPIGatewayURL()
+	var ml pm.PerformLog
+	ml.RouteID = rts.RouteID
+	ml.RouteURIID = rts.URLID
+	ml.Latency = rms
+	go m.SavePerformance(ml)
+	w.WriteHeader(rtnCode)
+	fmt.Fprint(w, rtn)
+
+}
