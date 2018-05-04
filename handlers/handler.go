@@ -5,6 +5,9 @@ import (
 	cst "ApiGateway/cluster"
 	e "ApiGateway/errors"
 	mgr "ApiGateway/managers"
+	"bytes"
+	"fmt"
+	"io/ioutil"
 	//"fmt"
 	//"fmt"
 	"net/http"
@@ -102,4 +105,39 @@ func buildRespHeaders(inw *http.Response, outw http.ResponseWriter) {
 		// }
 		outw.Header().Set(hn, v[0])
 	}
+}
+
+func processReqBody(p *passParams) (*[]byte, bool) {
+	var fail = false
+	var body []byte
+	if p.r.Method == http.MethodPost || p.r.Method == http.MethodPut || p.r.Method == http.MethodPatch {
+		var err error
+		//make this fail
+		body, err = ioutil.ReadAll(p.r.Body)
+		if err != nil {
+			fail = true
+			fmt.Print("process body err: ")
+			fmt.Println(err)
+		}
+	}
+	return &body, fail
+}
+
+func getRequest(method string, url string, body *[]byte) (*http.Request, bool) {
+	var failed = false
+	var req *http.Request
+	var rErr error
+	if method == http.MethodPost || method == http.MethodPut || method == http.MethodPatch {
+		req, rErr = http.NewRequest(method, url, bytes.NewBuffer(*body))
+	} else {
+		req, rErr = http.NewRequest(method, url, nil)
+	}
+	if rErr != nil {
+		fmt.Print("request err: ")
+		fmt.Println(rErr)
+		failed = true
+		//rtnCode = 400
+		//rtn = rErr.Error()
+	}
+	return req, failed
 }

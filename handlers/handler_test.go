@@ -1,14 +1,23 @@
 package handlers
 
 import (
+	"bytes"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	//"net/http/httptest"
 	"net/url"
 	"os"
+	//"reflect"
 	"testing"
 )
+
+type Challenge struct {
+	Question string `json:"question"`
+	Key      string `json:"key"`
+	Answer   string `json:"answer"`
+}
 
 func Test_parseQueryString(t *testing.T) {
 	var q = make(url.Values, 0)
@@ -109,5 +118,87 @@ func TestHandler_buildRespHeaders(t *testing.T) {
 		if v[0] != "application/json" {
 			t.Fail()
 		}
+	}
+}
+
+func Test_processBody(t *testing.T) {
+	var c Challenge
+	c.Answer = "test"
+	c.Key = "123"
+	c.Question = "test"
+	aJSON, _ := json.Marshal(c)
+	r, _ := http.NewRequest("POST", "/test", bytes.NewBuffer(aJSON))
+	var p passParams
+	p.r = r
+	body, fail := processReqBody(&p)
+	fmt.Print("body no err: ")
+	fmt.Println(body)
+	if fail && body != nil {
+		t.Fail()
+	}
+}
+
+type errReader int
+
+func (errReader) Read(p []byte) (n int, err error) {
+	return 0, errors.New("test error")
+}
+
+func Test_processBodyMethod(t *testing.T) {
+	var c Challenge
+	c.Answer = "test"
+	c.Key = "123"
+	c.Question = "test"
+	//aJSON, _ := json.Marshal(c)
+	//var bd []byte
+	r, _ := http.NewRequest("POST", "/test", errReader(0))
+	var p passParams
+	p.r = r
+	body, fail := processReqBody(&p)
+	fmt.Print("body with err: ")
+	fmt.Println(body)
+	if !fail && body != nil {
+		t.Fail()
+	}
+}
+
+func Test_getRequest(t *testing.T) {
+	var c Challenge
+	c.Answer = "test"
+	c.Key = "123"
+	c.Question = "test"
+	aJSON, _ := json.Marshal(c)
+
+	req, failed := getRequest("POST", "http://test", &aJSON)
+	fmt.Print("failed: ")
+	fmt.Println(failed)
+	fmt.Print("req: ")
+	fmt.Println(req)
+	if failed && req == nil {
+		t.Fail()
+	}
+}
+
+func Test_getRequest2(t *testing.T) {
+
+	req, failed := getRequest("GET", "http://test", nil)
+	fmt.Print("failed: ")
+	fmt.Println(failed)
+	fmt.Print("req: ")
+	fmt.Println(req)
+	if failed && req == nil {
+		t.Fail()
+	}
+}
+
+func Test_getRequestBadUrl(t *testing.T) {
+
+	req, failed := getRequest("GET", "://test", nil)
+	fmt.Print("failed: ")
+	fmt.Println(failed)
+	fmt.Print("req: ")
+	fmt.Println(req)
+	if !failed {
+		t.Fail()
 	}
 }
