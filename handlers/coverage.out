@@ -23,8 +23,8 @@ ApiGateway/handlers/doPostPutPatch.go:61.4,64.4 2 1
 ApiGateway/handlers/doPostPutPatch.go:66.3,71.3 4 1
 ApiGateway/handlers/handler.go:46.47,49.31 3 1
 ApiGateway/handlers/handler.go:57.2,57.12 1 1
-ApiGateway/handlers/handler.go:49.31,50.20 1 1
-ApiGateway/handlers/handler.go:50.20,53.4 2 1
+ApiGateway/handlers/handler.go:49.31,50.12 1 1
+ApiGateway/handlers/handler.go:50.12,53.4 2 1
 ApiGateway/handlers/handler.go:53.4,55.4 1 1
 ApiGateway/handlers/handler.go:60.32,62.36 2 1
 ApiGateway/handlers/handler.go:67.2,67.12 1 1

@@ -47,7 +47,7 @@ func parseQueryString(vals url.Values) string {
 	var rtn = ""
 	var first = true
 	for key, value := range vals {
-		if first == true {
+		if first {
 			first = false
 			rtn += "?" + key + "=" + value[0]
 		} else {
