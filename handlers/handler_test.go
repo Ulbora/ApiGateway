@@ -10,6 +10,9 @@ import (
 	"net/url"
 	"os"
 	//"reflect"
+	cst "ApiGateway/cluster"
+	e "ApiGateway/errors"
+	mgr "ApiGateway/managers"
 	"testing"
 )
 
@@ -199,6 +202,158 @@ func Test_getRequestBadUrl(t *testing.T) {
 	fmt.Print("req: ")
 	fmt.Println(req)
 	if !failed {
+		t.Fail()
+	}
+}
+
+func Test_processServiceCall(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://google.com", nil)
+	fmt.Print("err: ")
+	fmt.Println(err)
+	fmt.Print("req: ")
+	fmt.Println(req)
+	resp, e, failed := processServiceCall(req)
+	fmt.Print("get resp: ")
+	fmt.Println(resp)
+	if failed && resp == nil {
+		fmt.Print("service call error: ")
+		fmt.Println(e)
+		t.Fail()
+	}
+}
+
+func Test_processServiceCallPost(t *testing.T) {
+	var c Challenge
+	c.Answer = "test"
+	c.Key = "123"
+	c.Question = "test"
+	aJSON, _ := json.Marshal(c)
+
+	req, err := http.NewRequest("POST", "http://google.com", bytes.NewBuffer(aJSON))
+	fmt.Print("Post err: ")
+	fmt.Println(err)
+	fmt.Print("Post req: ")
+	fmt.Println(req)
+	resp, e, failed := processServiceCall(req)
+	fmt.Print("Post resp: ")
+	fmt.Println(resp)
+	if failed && resp == nil {
+		fmt.Print("service call error: ")
+		fmt.Println(e)
+		t.Fail()
+	}
+}
+
+func Test_processServiceCallUrl(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://google.tst", nil)
+	fmt.Print("err: ")
+	fmt.Println(err)
+	fmt.Print("req: ")
+	fmt.Println(req)
+	resp, e, failed := processServiceCall(req)
+	fmt.Print("bad get resp: ")
+	fmt.Println(resp)
+	if !failed && resp != nil {
+		fmt.Print("service call error: ")
+		fmt.Println(e)
+		t.Fail()
+	}
+}
+
+func Test_tripBreaker(t *testing.T) {
+
+	var p passParams
+	var clstRt cst.GatewayRoutes
+
+	p.clst = &clstRt
+	p.clst.Host = "http://localhost:3011"
+	p.clst.ClientID = 403
+	p.clst.APIKey = "403"
+	p.gwr = new(mgr.GatewayRoutes)
+	p.gwr.ClientID = 403
+	p.rts = new(mgr.GatewayRouteURL)
+	p.rts.FailoverRouteName = "blue"
+	p.rts.FailureThreshold = 1
+	p.rts.HealthCheckTimeSeconds = 120
+	p.rts.OpenFailCode = 400
+	p.rts.RouteID = 22
+	p.rts.URLID = 33
+	failed := tripBreaker(&p)
+	if failed {
+		fmt.Print("trip error: ")
+		t.Fail()
+	}
+}
+
+func Test_tripBreakerErr(t *testing.T) {
+
+	var p passParams
+	var clstRt cst.GatewayRoutes
+
+	p.clst = &clstRt
+	p.clst.Host = "http://localhost:3011"
+	//p.clst.ClientID = 403
+	p.clst.APIKey = "403"
+	p.gwr = new(mgr.GatewayRoutes)
+	p.gwr.ClientID = 403
+	p.rts = new(mgr.GatewayRouteURL)
+	p.rts.FailoverRouteName = "blue"
+	p.rts.FailureThreshold = 1
+	p.rts.HealthCheckTimeSeconds = 120
+	p.rts.OpenFailCode = 400
+	p.rts.RouteID = 22
+	p.rts.URLID = 33
+	failed := tripBreaker(&p)
+	if !failed {
+		fmt.Print("trip error: ")
+		t.Fail()
+	}
+}
+
+func Test_sendErrors(t *testing.T) {
+
+	var p passParams
+	var er e.GatewayErrors
+	p.e = &er
+
+	p.e.Host = "http://localhost:3011"
+	p.e.ClientID = 403
+	p.gwr = new(mgr.GatewayRoutes)
+	p.gwr.ClientID = 403
+	p.rts = new(mgr.GatewayRouteURL)
+	p.rts.RouteID = 22
+	p.rts.URLID = 33
+	suc, code := sendErrors(&p, 400, "service call failed")
+	// failed := sendErrors(&p, 400, "service call failed")
+	if !suc {
+		fmt.Print("send error success: ")
+		fmt.Println(suc)
+		fmt.Print("send error code: ")
+		fmt.Println(code)
+		t.Fail()
+	}
+}
+
+func Test_sendErrorsFail(t *testing.T) {
+
+	var p passParams
+	var er e.GatewayErrors
+	p.e = &er
+
+	p.e.Host = "http://localhost:3011"
+	//p.e.ClientID = 403
+	p.gwr = new(mgr.GatewayRoutes)
+	p.gwr.ClientID = 403
+	p.rts = new(mgr.GatewayRouteURL)
+	p.rts.RouteID = 22
+	p.rts.URLID = 33
+	suc, code := sendErrors(&p, 400, "service call failed")
+	// failed := sendErrors(&p, 400, "service call failed")
+	fmt.Print("send error success: ")
+	fmt.Println(suc)
+	fmt.Print("send error code: ")
+	fmt.Println(code)
+	if suc {
 		t.Fail()
 	}
 }

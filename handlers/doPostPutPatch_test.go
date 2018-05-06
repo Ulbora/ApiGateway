@@ -1,13 +1,23 @@
 package handlers
 
 import (
-//"bytes"
-//"encoding/json"
-//"fmt"
-//"net/http"
-//"net/http/httptest"
-//"net/url"
-//"testing"
+	"bytes"
+	"encoding/json"
+	//"errors"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
+	//"bytes"
+	//"encoding/json"
+	//"fmt"
+	//"net/http"
+	//"net/http/httptest"
+	//"net/url"
+	cst "ApiGateway/cluster"
+	e "ApiGateway/errors"
+	mgr "ApiGateway/managers"
+	"testing"
 )
 
 type challenge struct {
@@ -15,167 +25,316 @@ type challenge struct {
 	Key    string `json:"key"`
 }
 
-var tgpcid int64 = 46
+func TestGatewayPost_doPostPutPatch(t *testing.T) {
 
-// //var rrID int64
+	var p passParams
+	p.h = new(Handler)
+	var clstRt cst.GatewayRoutes
 
-// //var routeErr int64
-// //var routeURLErrID int64
-// var connectedForTgp bool
-// var gwTgp mgr.GatewayDB
+	p.clst = &clstRt
+	p.clst.Host = "http://localhost:3011"
+	//p.clst.ClientID = 403
+	p.clst.APIKey = "403"
+	p.gwr = new(mgr.GatewayRoutes)
+	p.gwr.ClientID = 403
 
-// //var gwRoutesErr mgr.GatewayRoutes
-// //var hrr Handler
+	p.rts = new(mgr.GatewayRouteURL)
+	p.rts.URL = "http://challenge.myapigateway.com"
+	p.fpath = "rs/challenge"
+	var q = make(url.Values, 0)
+	q.Set("p1", "param1")
+	p.code = &q
+	var c challenge
+	c.Answer = "test"
+	c.Key = "test"
 
-// func TestGatewayPost_Connect(t *testing.T) {
-// 	gwTgp.DbConfig.Host = "localhost:3306"
-// 	gwTgp.DbConfig.DbUser = "admin"
-// 	gwTgp.DbConfig.DbPw = "admin"
-// 	gwTgp.DbConfig.DatabaseName = "ulbora_api_gateway"
-// 	connectedForTgp = gwTgp.ConnectDb()
-// 	if connectedForTgp != true {
-// 		t.Fail()
-// 	}
-// 	//gwRoutesErr.GwDB.DbConfig = edb.DbConfig
-// 	//gwRoutes.GwDB.DbConfig = gwRoutes.GwDB.DbConfig
-// 	//cp.Host = "http://localhost:3010"
-// 	//testMode = true
-// 	//hrr.DbConfig = gwRR.DbConfig
+	aJSON, _ := json.Marshal(c)
+	r, _ := http.NewRequest("POST", "/test", bytes.NewBuffer(aJSON))
+	r.Header.Set("Content-Type", "application/json")
+	p.r = r
+	w := httptest.NewRecorder()
+	p.w = w
+
+	p.rts.RouteID = 22
+	p.rts.URLID = 33
+	var er e.GatewayErrors
+	p.e = &er
+	p.e.Host = "http://localhost:3011"
+	p.e.ClientID = 403
+	rtn := doPostPutPatch(&p)
+	fmt.Print("rtn in doPostPutPatch: ")
+	fmt.Println(rtn)
+	if rtn.rtnCode != http.StatusOK {
+		t.Fail()
+	}
+}
+
+func TestGatewayPost_doPostPutPatchParam(t *testing.T) {
+
+	var p passParams
+	//p.h = new(Handler)
+	var clstRt cst.GatewayRoutes
+
+	p.clst = &clstRt
+	p.clst.Host = "http://localhost:3011"
+	//p.clst.ClientID = 403
+	p.clst.APIKey = "403"
+	p.gwr = new(mgr.GatewayRoutes)
+	p.gwr.ClientID = 403
+
+	p.rts = new(mgr.GatewayRouteURL)
+	p.rts.URL = "http://challenge.myapigateway.com"
+	p.fpath = "rs/challenge"
+	var q = make(url.Values, 0)
+	q.Set("p1", "param1")
+	p.code = &q
+	var c challenge
+	c.Answer = "test"
+	c.Key = "test"
+
+	aJSON, _ := json.Marshal(c)
+	r, _ := http.NewRequest("POST", "/test", bytes.NewBuffer(aJSON))
+	r.Header.Set("Content-Type", "application/json")
+	p.r = r
+	w := httptest.NewRecorder()
+	p.w = w
+
+	p.rts.RouteID = 22
+	p.rts.URLID = 33
+	var er e.GatewayErrors
+	p.e = &er
+	p.e.Host = "http://localhost:3011"
+	p.e.ClientID = 403
+	rtn := doPostPutPatch(&p)
+	fmt.Print("rtn in doPostPutPatch: ")
+	fmt.Println(rtn)
+	if rtn.rtnCode != http.StatusInternalServerError {
+		t.Fail()
+	}
+}
+
+// type errReader int
+
+// func (errReader) Read(p []byte) (n int, err error) {
+// 	return 0, errors.New("test error")
 // }
+func TestGatewayPost_doPostPutPatchReq(t *testing.T) {
 
-// func TestGatewayPost_doPostPutPatchReq(t *testing.T) {
-// 	var p passParams
-// 	p.h = new(Handler)
-// 	var cbr cb.CircuitBreaker
-// 	cbr.DbConfig = gwTgp.DbConfig
-// 	p.h.CbDB = cbr
-// 	p.b = new(cb.Breaker)
-// 	p.gwr = new(mgr.GatewayRoutes)
-// 	p.rts = new(mgr.GatewayRouteURL)
-// 	p.rts.URL = "http://challenge.myapigateway.com"
-// 	p.fpath = "rs/challenge"
-// 	var q = make(url.Values, 0)
-// 	q.Set("p1", "param1")
-// 	p.code = &q
+	var p passParams
+	p.h = new(Handler)
+	var clstRt cst.GatewayRoutes
 
-// 	aJSON, _ := json.Marshal(nil)
-// 	r, _ := http.NewRequest("POST", "/test", bytes.NewBuffer(aJSON))
-// 	r.Header.Set("Content-Type", "application/json")
-// 	p.r = r
-// 	w := httptest.NewRecorder()
-// 	p.w = w
+	p.clst = &clstRt
+	p.clst.Host = "http://localhost:3011"
+	//p.clst.ClientID = 403
+	p.clst.APIKey = "403"
+	p.gwr = new(mgr.GatewayRoutes)
+	p.gwr.ClientID = 403
 
-// 	//["p1"] = ["param1"]
+	p.rts = new(mgr.GatewayRouteURL)
+	p.rts.URL = "http://challenge.myapigateway.com"
+	p.fpath = "rs/challenge"
+	var q = make(url.Values, 0)
+	q.Set("p1", "param1")
+	p.code = &q
+	//var c challenge
+	//c.Answer = "test"
+	//c.Key = "test"
 
-// 	rtn := doPostPutPatch(&p)
-// 	fmt.Print("doPost Res: ")
-// 	fmt.Println(rtn)
-// 	if rtn.rtnCode != http.StatusBadRequest {
-// 		t.Fail()
-// 	}
-// }
+	//aJSON, _ := json.Marshal(c)
+	//r, _ := http.NewRequest("POST", "/test", bytes.NewBuffer(aJSON))
+	r, _ := http.NewRequest("POST", "/test", errReader(0))
+	r.Header.Set("Content-Type", "application/json")
+	p.r = r
+	w := httptest.NewRecorder()
+	p.w = w
 
-// func TestGatewayPost_doPostPutPatchReq2(t *testing.T) {
-// 	var p passParams
-// 	p.h = new(Handler)
-// 	var cbr cb.CircuitBreaker
-// 	cbr.DbConfig = gwTgp.DbConfig
-// 	p.h.CbDB = cbr
-// 	p.b = new(cb.Breaker)
-// 	p.gwr = new(mgr.GatewayRoutes)
-// 	p.rts = new(mgr.GatewayRouteURL)
-// 	//p.rts.URL = "http://challenge.myapigateway.com"
-// 	p.fpath = "rs/challenge"
-// 	var q = make(url.Values, 0)
-// 	q.Set("p1", "param1")
-// 	p.code = &q
-// 	var c challenge
-// 	c.Answer = "test"
-// 	c.Key = "test"
+	p.rts.RouteID = 22
+	p.rts.URLID = 33
+	var er e.GatewayErrors
+	p.e = &er
+	p.e.Host = "http://localhost:3011"
+	p.e.ClientID = 403
+	rtn := doPostPutPatch(&p)
+	fmt.Print("rtn in doPostPutPatch: ")
+	fmt.Println(rtn)
+	if rtn.rtnCode != http.StatusBadRequest {
+		t.Fail()
+	}
+}
 
-// 	aJSON, _ := json.Marshal(c)
-// 	r, _ := http.NewRequest("POST", "/test", bytes.NewBuffer(aJSON))
-// 	r.Header.Set("Content-Type", "application/json")
-// 	p.r = r
-// 	w := httptest.NewRecorder()
-// 	p.w = w
+func TestGatewayPost_doPostPutPatchBakUrl(t *testing.T) {
 
-// 	//["p1"] = ["param1"]
+	var p passParams
+	p.h = new(Handler)
+	var clstRt cst.GatewayRoutes
 
-// 	rtn := doPostPutPatch(&p)
-// 	fmt.Print("doPost bad req2 Res: ")
-// 	fmt.Println(rtn)
-// 	if rtn.rtnCode != http.StatusBadRequest {
-// 		t.Fail()
-// 	}
-// }
+	p.clst = &clstRt
+	p.clst.Host = "http://localhost:3011"
+	//p.clst.ClientID = 403
+	p.clst.APIKey = "403"
+	p.gwr = new(mgr.GatewayRoutes)
+	p.gwr.ClientID = 403
 
-// func TestGatewayPost_doPostPutPatchMedia(t *testing.T) {
-// 	var p passParams
-// 	p.h = new(Handler)
-// 	var cbr cb.CircuitBreaker
-// 	cbr.DbConfig = gwTgp.DbConfig
-// 	p.h.CbDB = cbr
-// 	p.b = new(cb.Breaker)
-// 	p.gwr = new(mgr.GatewayRoutes)
-// 	p.rts = new(mgr.GatewayRouteURL)
-// 	p.rts.URL = "http://challenge.myapigateway.com"
-// 	p.fpath = "rs/challenge"
-// 	var q = make(url.Values, 0)
-// 	q.Set("p1", "param1")
-// 	p.code = &q
-// 	var c challenge
-// 	c.Answer = "test"
-// 	c.Key = "test"
+	p.rts = new(mgr.GatewayRouteURL)
+	p.rts.URL = "://challenge.myapigateway.com"
+	p.fpath = "rs/challenge"
+	var q = make(url.Values, 0)
+	q.Set("p1", "param1")
+	p.code = &q
+	var c challenge
+	c.Answer = "test"
+	c.Key = "test"
 
-// 	aJSON, _ := json.Marshal(c)
-// 	r, _ := http.NewRequest("POST", "/test", bytes.NewBuffer(aJSON))
-// 	//r.Header.Set("Content-Type", "application/json")
-// 	p.r = r
-// 	w := httptest.NewRecorder()
-// 	p.w = w
+	aJSON, _ := json.Marshal(c)
+	r, _ := http.NewRequest("POST", "/test", bytes.NewBuffer(aJSON))
+	r.Header.Set("Content-Type", "application/json")
+	p.r = r
+	w := httptest.NewRecorder()
+	p.w = w
 
-// 	//["p1"] = ["param1"]
+	p.rts.RouteID = 22
+	p.rts.URLID = 33
+	var er e.GatewayErrors
+	p.e = &er
+	p.e.Host = "http://localhost:3011"
+	p.e.ClientID = 403
+	rtn := doPostPutPatch(&p)
+	fmt.Print("rtn in doPostPutPatch: ")
+	fmt.Println(rtn)
+	if rtn.rtnCode != http.StatusBadRequest {
+		t.Fail()
+	}
+}
 
-// 	rtn := doPostPutPatch(&p)
-// 	fmt.Print("doPost Res: ")
-// 	fmt.Println(rtn)
-// 	if rtn.rtnCode != http.StatusUnsupportedMediaType {
-// 		t.Fail()
-// 	}
-// }
+func TestGatewayPost_doPostPutPatchBadServiceCall(t *testing.T) {
 
-// func TestGatewayPost_doPostPutPatch(t *testing.T) {
-// 	var p passParams
-// 	p.h = new(Handler)
-// 	var cbr cb.CircuitBreaker
-// 	cbr.DbConfig = gwTgp.DbConfig
-// 	p.h.CbDB = cbr
-// 	p.b = new(cb.Breaker)
-// 	p.gwr = new(mgr.GatewayRoutes)
-// 	p.rts = new(mgr.GatewayRouteURL)
-// 	p.rts.URL = "http://challenge.myapigateway.com"
-// 	p.fpath = "rs/challenge"
-// 	var q = make(url.Values, 0)
-// 	q.Set("p1", "param1")
-// 	p.code = &q
-// 	var c challenge
-// 	c.Answer = "test"
-// 	c.Key = "test"
+	var p passParams
+	p.h = new(Handler)
+	var clstRt cst.GatewayRoutes
 
-// 	aJSON, _ := json.Marshal(c)
-// 	r, _ := http.NewRequest("POST", "/test", bytes.NewBuffer(aJSON))
-// 	r.Header.Set("Content-Type", "application/json")
-// 	p.r = r
-// 	w := httptest.NewRecorder()
-// 	p.w = w
+	p.clst = &clstRt
+	p.clst.Host = "http://localhost:3011"
+	//p.clst.ClientID = 403
+	p.clst.APIKey = "403"
+	p.gwr = new(mgr.GatewayRoutes)
+	p.gwr.ClientID = 403
 
-// 	//["p1"] = ["param1"]
+	p.rts = new(mgr.GatewayRouteURL)
+	p.rts.URL = "http://challenge.myapigateway.tst"
+	p.fpath = "rs/challenge"
+	var q = make(url.Values, 0)
+	q.Set("p1", "param1")
+	p.code = &q
+	var c challenge
+	c.Answer = "test"
+	c.Key = "test"
 
-// 	rtn := doPostPutPatch(&p)
-// 	fmt.Print("doPost Res: ")
-// 	fmt.Println(rtn)
-// 	if rtn.rtnCode != http.StatusOK {
-// 		t.Fail()
-// 	}
-// }
+	aJSON, _ := json.Marshal(c)
+	r, _ := http.NewRequest("POST", "/test", bytes.NewBuffer(aJSON))
+	r.Header.Set("Content-Type", "application/json")
+	p.r = r
+	w := httptest.NewRecorder()
+	p.w = w
+
+	p.rts.RouteID = 22
+	p.rts.URLID = 33
+	var er e.GatewayErrors
+	p.e = &er
+	p.e.Host = "http://localhost:3011"
+	p.e.ClientID = 403
+	rtn := doPostPutPatch(&p)
+	fmt.Print("rtn in doPostPutPatch: ")
+	fmt.Println(rtn)
+	if rtn.rtnCode != http.StatusBadRequest {
+		t.Fail()
+	}
+}
+
+func TestGatewayPost_doPostPutPatchNotFound(t *testing.T) {
+
+	var p passParams
+	p.h = new(Handler)
+	var clstRt cst.GatewayRoutes
+
+	p.clst = &clstRt
+	p.clst.Host = "http://localhost:3011"
+	//p.clst.ClientID = 403
+	p.clst.APIKey = "403"
+	p.gwr = new(mgr.GatewayRoutes)
+	p.gwr.ClientID = 403
+
+	p.rts = new(mgr.GatewayRouteURL)
+	p.rts.URL = "http://www.google.com"
+	p.fpath = "rs/challenge"
+	var q = make(url.Values, 0)
+	q.Set("p1", "param1")
+	p.code = &q
+	var c challenge
+	c.Answer = "test"
+	c.Key = "test"
+
+	aJSON, _ := json.Marshal(c)
+	r, _ := http.NewRequest("POST", "/test", bytes.NewBuffer(aJSON))
+	r.Header.Set("Content-Type", "application/json")
+	p.r = r
+	w := httptest.NewRecorder()
+	p.w = w
+
+	p.rts.RouteID = 22
+	p.rts.URLID = 33
+	var er e.GatewayErrors
+	p.e = &er
+	p.e.Host = "http://localhost:3011"
+	p.e.ClientID = 403
+	rtn := doPostPutPatch(&p)
+	fmt.Print("rtn in doPostPutPatch: ")
+	fmt.Println(rtn)
+	if rtn.rtnCode != http.StatusNotFound {
+		t.Fail()
+	}
+}
+
+func TestGatewayPost_doPostPutPatchBadResponseBody(t *testing.T) {
+
+	var p passParams
+	p.h = new(Handler)
+	var clstRt cst.GatewayRoutes
+
+	p.clst = &clstRt
+	p.clst.Host = "http://localhost:3011"
+	//p.clst.ClientID = 403
+	p.clst.APIKey = "403"
+	p.gwr = new(mgr.GatewayRoutes)
+	p.gwr.ClientID = 403
+
+	p.rts = new(mgr.GatewayRouteURL)
+	p.rts.URL = "http://www.google.com"
+	p.fpath = ""
+	var q = make(url.Values, 0)
+	q.Set("p1", "param1")
+	p.code = &q
+	var c challenge
+	c.Answer = "test"
+	c.Key = "test"
+
+	aJSON, _ := json.Marshal(c)
+	r, _ := http.NewRequest("GET", "/test", bytes.NewBuffer(aJSON))
+	r.Header.Set("Content-Type", "application/json")
+	p.r = r
+	w := httptest.NewRecorder()
+	p.w = w
+
+	p.rts.RouteID = 22
+	p.rts.URLID = 33
+	var er e.GatewayErrors
+	p.e = &er
+	p.e.Host = "http://localhost:3011"
+	p.e.ClientID = 403
+	rtn := doPostPutPatch(&p)
+	fmt.Print("rtn in doPostPutPatch resp body: ")
+	fmt.Println(rtn)
+	if rtn.rtnCode != http.StatusOK {
+		t.Fail()
+	}
+}

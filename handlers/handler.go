@@ -141,3 +141,58 @@ func getRequest(method string, url string, body *[]byte) (*http.Request, bool) {
 	}
 	return req, failed
 }
+
+func processServiceCall(req *http.Request) (*http.Response, string, bool) {
+	client := &http.Client{}
+	resp, cErr := client.Do(req)
+	var e string
+	var failed bool
+	if cErr != nil {
+		fmt.Print("Service call err: ")
+		fmt.Println(cErr)
+		e = cErr.Error()
+		failed = true
+	}
+	return resp, e, failed
+}
+
+func tripBreaker(p *passParams) bool {
+	var rtn bool
+	var b cst.Breaker
+	b.ClientID = p.gwr.ClientID
+	b.FailoverRouteName = p.rts.FailoverRouteName
+	b.FailureThreshold = p.rts.FailureThreshold
+	b.HealthCheckTimeSeconds = p.rts.HealthCheckTimeSeconds
+	b.OpenFailCode = p.rts.OpenFailCode
+	b.RestRouteID = p.rts.RouteID
+	b.RouteURIID = p.rts.URLID
+
+	resp, code := p.clst.TripBreaker(&b)
+	if !resp.Success || code != http.StatusOK {
+		fmt.Print("trip resp: ")
+		fmt.Println(resp)
+
+		fmt.Print("trip code: ")
+		fmt.Println(code)
+		rtn = true
+	}
+	return rtn
+}
+
+func sendErrors(p *passParams, errCode int, errMessage string) (bool, int) {
+	//var rtn = false
+	var el e.ErrorLog
+	el.ClientID = p.gwr.ClientID
+	el.ErrCode = errCode
+	el.RouteID = p.rts.RouteID
+	el.RouteURIID = p.rts.URLID
+	el.Message = errMessage
+	//go p.e.SaveErrors(el)
+	resp, code := p.e.SaveErrors(el)
+	//fmt.Print("send err resp: ")
+	//fmt.Println(resp)
+
+	//fmt.Print("send err code: ")
+	//fmt.Println(code)
+	return resp.Success, code
+}
