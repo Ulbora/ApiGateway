@@ -309,17 +309,17 @@ func TestGatewayPost_doPostPutPatchBadResponseBody(t *testing.T) {
 	p.gwr.ClientID = 403
 
 	p.rts = new(mgr.GatewayRouteURL)
-	p.rts.URL = "http://www.google.com"
+	p.rts.URL = "http://localhost:3030/test"
 	p.fpath = ""
 	var q = make(url.Values, 0)
-	q.Set("p1", "param1")
+	//q.Set("p1", "param1")
 	p.code = &q
-	var c challenge
-	c.Answer = "test"
-	c.Key = "test"
+	//var c challenge
+	//c.Answer = "test"
+	//c.Key = "test"
 
-	aJSON, _ := json.Marshal(c)
-	r, _ := http.NewRequest("GET", "/test", bytes.NewBuffer(aJSON))
+	//aJSON, _ := json.Marshal(c)
+	r, _ := http.NewRequest("GET", "/test", nil)
 	r.Header.Set("Content-Type", "application/json")
 	p.r = r
 	w := httptest.NewRecorder()
@@ -334,7 +334,7 @@ func TestGatewayPost_doPostPutPatchBadResponseBody(t *testing.T) {
 	rtn := doPostPutPatch(&p)
 	fmt.Print("rtn in doPostPutPatch resp body: ")
 	fmt.Println(rtn)
-	if rtn.rtnCode != http.StatusOK {
+	if rtn.rtnCode != http.StatusInternalServerError {
 		t.Fail()
 	}
 }
