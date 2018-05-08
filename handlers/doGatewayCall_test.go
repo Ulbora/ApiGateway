@@ -25,7 +25,7 @@ type challenge struct {
 	Key    string `json:"key"`
 }
 
-func TestGatewayPost_doPostPutPatch(t *testing.T) {
+func TestGatewayPost_doGatewayCall(t *testing.T) {
 
 	var p passParams
 	p.h = new(Handler)
@@ -61,7 +61,7 @@ func TestGatewayPost_doPostPutPatch(t *testing.T) {
 	p.e = &er
 	p.e.Host = "http://localhost:3011"
 	p.e.ClientID = 403
-	rtn := doPostPutPatch(&p)
+	rtn := doGatewayCall(&p)
 	fmt.Print("rtn in doPostPutPatch: ")
 	fmt.Println(rtn)
 	if rtn.rtnCode != http.StatusOK {
@@ -69,7 +69,7 @@ func TestGatewayPost_doPostPutPatch(t *testing.T) {
 	}
 }
 
-func TestGatewayPost_doPostPutPatchParam(t *testing.T) {
+func TestGatewayPost_doGatewayCallParam(t *testing.T) {
 
 	var p passParams
 	//p.h = new(Handler)
@@ -105,7 +105,7 @@ func TestGatewayPost_doPostPutPatchParam(t *testing.T) {
 	p.e = &er
 	p.e.Host = "http://localhost:3011"
 	p.e.ClientID = 403
-	rtn := doPostPutPatch(&p)
+	rtn := doGatewayCall(&p)
 	fmt.Print("rtn in doPostPutPatch: ")
 	fmt.Println(rtn)
 	if rtn.rtnCode != http.StatusInternalServerError {
@@ -118,7 +118,7 @@ func TestGatewayPost_doPostPutPatchParam(t *testing.T) {
 // func (errReader) Read(p []byte) (n int, err error) {
 // 	return 0, errors.New("test error")
 // }
-func TestGatewayPost_doPostPutPatchReq(t *testing.T) {
+func TestGatewayPost_doGatewayCallReq(t *testing.T) {
 
 	var p passParams
 	p.h = new(Handler)
@@ -155,7 +155,7 @@ func TestGatewayPost_doPostPutPatchReq(t *testing.T) {
 	p.e = &er
 	p.e.Host = "http://localhost:3011"
 	p.e.ClientID = 403
-	rtn := doPostPutPatch(&p)
+	rtn := doGatewayCall(&p)
 	fmt.Print("rtn in doPostPutPatch: ")
 	fmt.Println(rtn)
 	if rtn.rtnCode != http.StatusBadRequest {
@@ -163,7 +163,7 @@ func TestGatewayPost_doPostPutPatchReq(t *testing.T) {
 	}
 }
 
-func TestGatewayPost_doPostPutPatchBakUrl(t *testing.T) {
+func TestGatewayPost_doGatewayCallBakUrl(t *testing.T) {
 
 	var p passParams
 	p.h = new(Handler)
@@ -199,7 +199,7 @@ func TestGatewayPost_doPostPutPatchBakUrl(t *testing.T) {
 	p.e = &er
 	p.e.Host = "http://localhost:3011"
 	p.e.ClientID = 403
-	rtn := doPostPutPatch(&p)
+	rtn := doGatewayCall(&p)
 	fmt.Print("rtn in doPostPutPatch: ")
 	fmt.Println(rtn)
 	if rtn.rtnCode != http.StatusBadRequest {
@@ -207,7 +207,7 @@ func TestGatewayPost_doPostPutPatchBakUrl(t *testing.T) {
 	}
 }
 
-func TestGatewayPost_doPostPutPatchBadServiceCall(t *testing.T) {
+func TestGatewayPost_doGatewayCallBadServiceCall(t *testing.T) {
 
 	var p passParams
 	p.h = new(Handler)
@@ -243,7 +243,7 @@ func TestGatewayPost_doPostPutPatchBadServiceCall(t *testing.T) {
 	p.e = &er
 	p.e.Host = "http://localhost:3011"
 	p.e.ClientID = 403
-	rtn := doPostPutPatch(&p)
+	rtn := doGatewayCall(&p)
 	fmt.Print("rtn in doPostPutPatch: ")
 	fmt.Println(rtn)
 	if rtn.rtnCode != http.StatusBadRequest {
@@ -251,7 +251,7 @@ func TestGatewayPost_doPostPutPatchBadServiceCall(t *testing.T) {
 	}
 }
 
-func TestGatewayPost_doPostPutPatchNotFound(t *testing.T) {
+func TestGatewayPost_doGatewayCallNotFound(t *testing.T) {
 
 	var p passParams
 	p.h = new(Handler)
@@ -287,7 +287,7 @@ func TestGatewayPost_doPostPutPatchNotFound(t *testing.T) {
 	p.e = &er
 	p.e.Host = "http://localhost:3011"
 	p.e.ClientID = 403
-	rtn := doPostPutPatch(&p)
+	rtn := doGatewayCall(&p)
 	fmt.Print("rtn in doPostPutPatch: ")
 	fmt.Println(rtn)
 	if rtn.rtnCode != http.StatusNotFound {
@@ -295,7 +295,7 @@ func TestGatewayPost_doPostPutPatchNotFound(t *testing.T) {
 	}
 }
 
-func TestGatewayPost_doPostPutPatchBadResponseBody(t *testing.T) {
+func TestGatewayPost_doGatewayCallBadResponseBody(t *testing.T) {
 
 	var p passParams
 	p.h = new(Handler)
@@ -331,7 +331,7 @@ func TestGatewayPost_doPostPutPatchBadResponseBody(t *testing.T) {
 	p.e = &er
 	p.e.Host = "http://localhost:3011"
 	p.e.ClientID = 403
-	rtn := doPostPutPatch(&p)
+	rtn := doGatewayCall(&p)
 	fmt.Print("rtn in doPostPutPatch resp body: ")
 	fmt.Println(rtn)
 	if rtn.rtnCode != http.StatusInternalServerError {

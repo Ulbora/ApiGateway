@@ -277,7 +277,7 @@ func Test_tripBreaker(t *testing.T) {
 	p.rts.HealthCheckTimeSeconds = 120
 	p.rts.OpenFailCode = 400
 	p.rts.RouteID = 22
-	p.rts.URLID = 33
+	p.rts.URLID = 1395
 	failed := tripBreaker(&p)
 	if failed {
 		fmt.Print("trip error: ")
@@ -302,7 +302,7 @@ func Test_tripBreakerErr(t *testing.T) {
 	p.rts.HealthCheckTimeSeconds = 120
 	p.rts.OpenFailCode = 400
 	p.rts.RouteID = 22
-	p.rts.URLID = 33
+	p.rts.URLID = 1395
 	failed := tripBreaker(&p)
 	if !failed {
 		fmt.Print("trip error: ")
@@ -354,6 +354,69 @@ func Test_sendErrorsFail(t *testing.T) {
 	fmt.Print("send error code: ")
 	fmt.Println(code)
 	if suc {
+		t.Fail()
+	}
+}
+
+func Test_getPathParams(t *testing.T) {
+	r, _ := http.NewRequest("GET", "/challenge?route=test&rname=blue&fpath=send", nil)
+	var pmap = make(map[string]string)
+	pmap["route"] = "route1"
+	pmap["rname"] = "rname1"
+	pmap["fpath"] = "fpath1"
+	route, rname, fpath := getPathParams(pmap, r)
+
+	// failed := sendErrors(&p, 400, "service call failed")
+	fmt.Print("route: ")
+	fmt.Println(route)
+	fmt.Print("rname: ")
+	fmt.Println(rname)
+	fmt.Print("fpath: ")
+	fmt.Println(fpath)
+	//fmt.Println(code)
+	if route != "route1" || rname != "rname1" || fpath != "fpath1" {
+		t.Fail()
+	}
+}
+
+func Test_getPathParamsNil(t *testing.T) {
+	r, _ := http.NewRequest("GET", "/challenge?route=route1&rname=rname1&fpath=fpath1", nil)
+	var pmap map[string]string
+	//pmap["route"] = "route1"
+	//pmap["rname"] = "rname1"
+	//pmap["fpath"] = "fpath1"
+	route, rname, fpath := getPathParams(pmap, r)
+
+	// failed := sendErrors(&p, 400, "service call failed")
+	fmt.Print("route: ")
+	fmt.Println(route)
+	fmt.Print("rname: ")
+	fmt.Println(rname)
+	fmt.Print("fpath: ")
+	fmt.Println(fpath)
+	//fmt.Println(code)
+	if route != "route1" || rname != "rname1" || fpath != "fpath1" {
+		t.Fail()
+	}
+}
+
+func Test_getPathParamsNone(t *testing.T) {
+	r, _ := http.NewRequest("GET", "/challenge", nil)
+	var pmap map[string]string
+	//pmap["route"] = "route1"
+	//pmap["rname"] = "rname1"
+	//pmap["fpath"] = "fpath1"
+	route, rname, fpath := getPathParams(pmap, r)
+
+	// failed := sendErrors(&p, 400, "service call failed")
+	fmt.Print("route: ")
+	fmt.Println(route)
+	fmt.Print("rname: ")
+	fmt.Println(rname)
+	fmt.Print("fpath: ")
+	fmt.Println(fpath)
+	//fmt.Println(code)
+	if route != "" || rname != "" || fpath != "" {
 		t.Fail()
 	}
 }

@@ -196,3 +196,19 @@ func sendErrors(p *passParams, errCode int, errMessage string) (bool, int) {
 	//fmt.Println(code)
 	return resp.Success, code
 }
+
+func getPathParams(vars map[string]string, r *http.Request) (string, string, string) {
+	var route string
+	var rName string
+	var fpath string
+	if vars != nil {
+		route = vars["route"]
+		rName = vars["rname"]
+		fpath = vars["fpath"]
+	} else {
+		route = r.URL.Query().Get("route")
+		rName = r.URL.Query().Get("rname")
+		fpath = r.URL.Query().Get("fpath")
+	}
+	return route, rName, fpath
+}

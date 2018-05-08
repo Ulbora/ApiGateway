@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func doPostPutPatch(p *passParams) *returnVals {
+func doGatewayCall(p *passParams) *returnVals {
 	var rtnVals returnVals
 	if paramsOK(p) {
 		var spath = p.rts.URL + "/" + p.fpath + parseQueryString(*p.code)

@@ -13,6 +13,7 @@ import (
 
 //HandleGwRoute HandleGwRoute
 func (h *Handler) HandleGwRoute(w http.ResponseWriter, r *http.Request) {
+	var rtns *returnVals
 	var rtn string
 	var rtnCode int
 	var gw mgr.GatewayRoutes
@@ -25,20 +26,15 @@ func (h *Handler) HandleGwRoute(w http.ResponseWriter, r *http.Request) {
 	var eTime1 time.Time
 	var eTime2 time.Time
 
-	var route string
-	var rName string
-	var fpath string
-
 	vars := mux.Vars(r)
-	if vars != nil {
-		route = vars["route"]
-		rName = vars["rname"]
-		fpath = vars["fpath"]
-	} else {
-		route = r.URL.Query().Get("route")
-		rName = r.URL.Query().Get("rname")
-		fpath = r.URL.Query().Get("fpath")
-	}
+	route, rName, fpath := getPathParams(vars, r)
+	fmt.Print("route in gateway: ")
+	fmt.Println(route)
+	fmt.Print("rName: ")
+	fmt.Println(rName)
+	fmt.Print("fpath: ")
+	fmt.Println(fpath)
+
 	code := r.URL.Query()
 	var activeRoute = true
 	if rName != "" {
@@ -47,32 +43,46 @@ func (h *Handler) HandleGwRoute(w http.ResponseWriter, r *http.Request) {
 	rts := gw.GetGatewayRoute(activeRoute, route, rName)
 	if rts.URL == "" {
 		fmt.Println("No route found in gateway")
-		rtnCode = rts.OpenFailCode
+		rtnCode = http.StatusNotFound // rts.OpenFailCode
 		rtn = "bad route"
-		//fmt.Print("found routes: ")
-		//fmt.Println(rts)
+		fmt.Print("found routes: ")
+		fmt.Println(rts)
 	} else if rts.CircuitOpen {
 		fmt.Println("Circuit breaker is open for this route")
 		rtnCode = rts.OpenFailCode
 		rtn = "Circuit open"
-		//fmt.Print("found route: ")
-		//fmt.Println(rts)
+		fmt.Print("found route: ")
+		fmt.Println(rts)
 	} else {
 		var clstRt cst.GatewayRoutes
 		var er e.GatewayErrors
 		var p passParams
 		p.clst = &clstRt
+		p.clst.Host = getAPIGatewayURL()
+		p.clst.ClientID = h.ClientID
+		p.clst.APIKey = h.APIKey
 		p.code = &code
 		p.fpath = fpath
 		p.gwr = &gw
+		p.gwr.ClientID = h.ClientID
 		p.h = h
 		p.r = r
 		p.e = &er
+		p.e.Host = getAPIGatewayURL()
+		p.e.ClientID = h.ClientID
 		p.rts = rts
 		p.w = w
-		switch r.Method {
+		rtns = doGatewayCall(&p)
+		rtnCode = rtns.rtnCode
+		rtn = rtns.rtn
+		eTime1 = rtns.eTime1
+		sTime2 = rtns.sTime2
+		fmt.Print("rtns from gateway: ")
+		fmt.Println(rtns)
 
-		}
+		// switch r.Method {
+
+		// }
 	}
 
 	eTime2 = time.Now()
