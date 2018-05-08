@@ -1,7 +1,7 @@
 package main
 
 import (
-	h "ApiGateway/handlers"
+	hd "ApiGateway/handlers"
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -10,6 +10,7 @@ import (
 func main() {
 	fmt.Println("Api Gateway running inside network on port 3020!")
 	router := mux.NewRouter()
+	var h hd.Handler
 	//gateway routes
 	router.HandleFunc("/np/{route}/{rname}/{fpath:[^.]+}", h.HandleGwRoute)
 	router.HandleFunc("/{route}/{fpath:[^ ]+}", h.HandleGwRoute)
