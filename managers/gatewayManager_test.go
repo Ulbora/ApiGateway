@@ -99,7 +99,7 @@ func TestGatewayRoutes_readAndStore(t *testing.T) {
 	gw.APIKey = "403"
 	c.ClientID = strconv.FormatInt(gw.ClientID, 10)
 	gw.Cache = c
-	rts := gw.readAndStore("challenge")
+	rts := gw.ReadAndStore("challenge")
 	fmt.Print("read routes: ")
 	fmt.Println(rts)
 	if len(*rts) == 0 {

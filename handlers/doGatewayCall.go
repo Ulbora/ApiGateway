@@ -30,11 +30,13 @@ func doGatewayCall(p *passParams) *returnVals {
 						rtnVals.rtnCode = 500
 						rtnVals.rtn = err.Error()
 						tripBreaker(p)
+						// add code to refresh cache ----------------------------
+						//p.gwr.HandleRefresh(p.rts.Route)
 						go sendErrors(p, rtnVals.rtnCode, err.Error())
 					} else {
 						rtnVals.rtn = string(respbody)
-						//fmt.Print("Resp Body: ")
-						//fmt.Println(rtnVals.rtn)
+						fmt.Print("Resp Body in doGatewayCall: ")
+						fmt.Println(rtnVals.rtn)
 						rtnVals.rtnCode = resp.StatusCode
 						if rtnVals.rtnCode != http.StatusOK {
 							go sendErrors(p, rtnVals.rtnCode, resp.Status)

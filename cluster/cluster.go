@@ -36,9 +36,11 @@ type Breaker struct {
 	HealthCheckTimeSeconds int    `json:"healthCheckTimeSeconds"`
 	FailoverRouteName      string `json:"failoverRouteName"`
 	OpenFailCode           int    `json:"openFailCode"`
+	PartialOpen            bool   `json:"partialOpen"`
 	RouteURIID             int64  `json:"routeUriId"`
 	RestRouteID            int64  `json:"routeId"`
 	ClientID               int64  `json:"clientId"`
+	Route                  string `json:"route"`
 }
 
 //ResetBreaker ResetBreaker
@@ -70,6 +72,8 @@ func (gw *GatewayRoutes) GetClusterGwRoutes(route string) (*[]GatewayClusterRout
 		fmt.Println("get failed")
 		code = http.StatusBadRequest
 	}
+	fmt.Print("rtn: ")
+	fmt.Println(rtn)
 	return &rtn, code
 }
 
@@ -103,11 +107,15 @@ func (gw *GatewayRoutes) TripBreaker(obj interface{}) (*GatewayClusterResponse, 
 	fmt.Println(tpURL)
 	j := cm.GetJSONEncode(obj)
 	req, fail := cm.GetRequest(tpURL, http.MethodPost, j)
+	fmt.Print("req: ")
+	fmt.Println(req)
 	if !fail {
 		cid := strconv.FormatInt(gw.ClientID, 10)
 		req.Header.Set("u-client-id", cid)
 		req.Header.Set("u-api-key", gw.APIKey)
 		req.Header.Set("Content-Type", "application/json")
+		fmt.Print("headers: ")
+		fmt.Println(req.Header)
 		code = cm.ProcessServiceCall(req, &rtn)
 	} else {
 		fmt.Println("trip breaker failed")

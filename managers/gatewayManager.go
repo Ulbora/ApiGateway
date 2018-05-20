@@ -1,6 +1,7 @@
 package managers
 
 import (
+	"fmt"
 	//"fmt"
 	"os"
 	"strconv"
@@ -28,6 +29,7 @@ type GatewayRouteURL struct {
 	Active                 bool   `json:"active"`
 	CircuitOpen            bool   `json:"circuitOpen"`
 	OpenFailCode           int    `json:"openFailCode"`
+	PartialOpen            bool   `json:"partialOpen"`
 	FailoverRouteName      string `json:"failoverRouteName"`
 	FailureThreshold       int    `json:"failureThreshold"`
 	HealthCheckTimeSeconds int    `json:"healthCheckTimeSeconds"`
@@ -38,14 +40,14 @@ func (gw *GatewayRoutes) GetGatewayRoute(getActive bool, route string, routeName
 	var rtnVal GatewayRouteURL
 	var rtn *[]cl.GatewayClusterRouteURL
 	crts := gw.Cache.GetRoutes(route)
-	//fmt.Print("crts: ")
-	//fmt.Println(crts)
-	if crts != nil {
+	fmt.Print("crts: ")
+	fmt.Println(crts)
+	if crts != nil && len(*crts) > 0 {
 		// work with cached routes and the delete
 		rtn = crts
-		gw.handleRefresh(route)
+		gw.HandleRefresh(route)
 	} else {
-		rtn = gw.readAndStore(route)
+		rtn = gw.ReadAndStore(route)
 		//fmt.Print("code: ")
 		//fmt.Println(code)
 	}
@@ -102,7 +104,8 @@ func parseGatewayRoutes(rt cl.GatewayClusterRouteURL) GatewayRouteURL {
 	return rtn
 }
 
-func (gw *GatewayRoutes) readAndStore(route string) *[]cl.GatewayClusterRouteURL {
+//ReadAndStore ReadAndStore
+func (gw *GatewayRoutes) ReadAndStore(route string) *[]cl.GatewayClusterRouteURL {
 	var clst cl.GatewayRoutes
 	clst.ClientID = gw.ClientID
 	clst.APIKey = gw.APIKey
@@ -114,20 +117,25 @@ func (gw *GatewayRoutes) readAndStore(route string) *[]cl.GatewayClusterRouteURL
 	return rtn
 }
 
-func (gw *GatewayRoutes) handleRefresh(route string) {
-	//fmt.Print("CacheRefreshRate before if: ")
-	//fmt.Println(gw.CacheRefreshRate)
-	//fmt.Print("getCacheRefreshRate before if: ")
-	//fmt.Println(getCacheRefreshRate())
-	if gw.CacheRefreshRate >= getCacheRefreshRate() {
-		gw.CacheRefreshRate = 0
+//HandleRefresh HandleRefresh
+func (gw *GatewayRoutes) HandleRefresh(route string) {
+	fmt.Print("CacheRefreshRate before if: ")
+	fmt.Println(gw.Cache.GetRrRate(route))
+	fmt.Print("getCacheRefreshRate before if: ")
+	fmt.Println(getCacheRefreshRate())
+	if gw.Cache.GetRrRate(route) >= getCacheRefreshRate() {
+		gw.Cache.SaveRrRate(route, 0)
+		//gw.CacheRefreshRate = 0
 		//fmt.Print("CacheRefreshRate: ")
 		//fmt.Println(gw.CacheRefreshRate)
 		go func(gwr *GatewayRoutes, rt string) {
-			gwr.readAndStore(rt)
+			gwr.ReadAndStore(rt)
 		}(gw, route)
 	} else {
-		gw.CacheRefreshRate++
+		rrRate := gw.Cache.GetRrRate(route)
+		rrRate++
+		gw.Cache.SaveRrRate(route, rrRate)
+		//gw.CacheRefreshRate++
 		//fmt.Print("CacheRefreshRate: ")
 		//fmt.Println(gw.CacheRefreshRate)
 	}

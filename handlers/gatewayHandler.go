@@ -41,6 +41,8 @@ func (h *Handler) HandleGwRoute(w http.ResponseWriter, r *http.Request) {
 		activeRoute = false
 	}
 	rts := gw.GetGatewayRoute(activeRoute, route, rName)
+	fmt.Print("rts: ")
+	fmt.Println(rts)
 	if rts.URL == "" {
 		fmt.Println("No route found in gateway")
 		rtnCode = http.StatusNotFound // rts.OpenFailCode
@@ -51,6 +53,7 @@ func (h *Handler) HandleGwRoute(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Circuit breaker is open for this route")
 		rtnCode = rts.OpenFailCode
 		rtn = "Circuit open"
+		gw.ReadAndStore(route)
 		fmt.Print("found route: ")
 		fmt.Println(rts)
 	} else {

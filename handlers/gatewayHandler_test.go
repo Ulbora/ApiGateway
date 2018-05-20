@@ -67,7 +67,7 @@ func TestHandler_HandleGwRouteOpen(t *testing.T) {
 	fmt.Println(w.Body)
 	fmt.Print("Code in gateway for open circuit: ")
 	fmt.Println(w.Code)
-	if w.Code != 500 {
+	if w.Code != 500 && w.Code != 400 {
 		t.Fail()
 	}
 }

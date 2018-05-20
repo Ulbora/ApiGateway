@@ -38,3 +38,22 @@ func TestRouteCache_GetRoutes(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestRouteCache_SaveRrRate(t *testing.T) {
+	var c RouteCache
+	c.ClientID = "123"
+
+	rtn := c.SaveRrRate("content", 1)
+	if rtn != "123:content:rrrate" {
+		t.Fail()
+	}
+}
+
+func TestRouteCache_GetRrRate(t *testing.T) {
+	var c RouteCache
+	c.ClientID = "123"
+	rtn := c.GetRrRate("content")
+	if rtn != 1 {
+		t.Fail()
+	}
+}

@@ -1,5 +1,6 @@
 mode: set
-ApiGateway/errors/errors.go:31.82,39.11 8 1
-ApiGateway/errors/errors.go:48.2,48.19 1 1
-ApiGateway/errors/errors.go:39.11,44.3 4 1
-ApiGateway/errors/errors.go:44.3,47.3 2 1
+ApiGateway/errors/errors.go:31.82,39.11 6 1
+ApiGateway/errors/errors.go:57.2,57.19 1 1
+ApiGateway/errors/errors.go:39.11,44.28 5 1
+ApiGateway/errors/errors.go:44.28,52.4 6 1
+ApiGateway/errors/errors.go:53.3,56.3 2 1

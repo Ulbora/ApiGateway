@@ -78,6 +78,8 @@ func ProcessServiceCall(req *http.Request, obj interface{}) int {
 	var code int
 	client := &http.Client{}
 	resp, cErr := client.Do(req)
+	fmt.Print("resp: ")
+	fmt.Println(resp)
 	if cErr != nil {
 		fmt.Print("Service err: ")
 		fmt.Println(cErr)
