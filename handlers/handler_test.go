@@ -285,6 +285,32 @@ func Test_tripBreaker(t *testing.T) {
 	}
 }
 
+func Test_tripBreakerPartialOpen(t *testing.T) {
+
+	var p passParams
+	var clstRt cst.GatewayRoutes
+
+	p.clst = &clstRt
+	p.clst.Host = "http://localhost:3011"
+	p.clst.ClientID = 403
+	p.clst.APIKey = "403"
+	p.gwr = new(mgr.GatewayRoutes)
+	p.gwr.ClientID = 403
+	p.rts = new(mgr.GatewayRouteURL)
+	p.rts.PartialOpen = true
+	p.rts.FailoverRouteName = "blue"
+	p.rts.FailureThreshold = 1
+	p.rts.HealthCheckTimeSeconds = 120
+	p.rts.OpenFailCode = 400
+	p.rts.RouteID = 22
+	p.rts.URLID = 1395
+	failed := tripBreaker(&p)
+	if failed {
+		fmt.Print("trip error: ")
+		t.Fail()
+	}
+}
+
 func Test_tripBreakerErr(t *testing.T) {
 
 	var p passParams
