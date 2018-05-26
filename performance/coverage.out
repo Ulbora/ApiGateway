@@ -1,5 +1,5 @@
 mode: set
-ApiGateway/performance/performance.go:29.90,37.11 8 1
+ApiGateway/performance/performance.go:29.90,37.11 6 1
 ApiGateway/performance/performance.go:46.2,46.19 1 1
 ApiGateway/performance/performance.go:37.11,42.3 4 1
 ApiGateway/performance/performance.go:42.3,45.3 2 1

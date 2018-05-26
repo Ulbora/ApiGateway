@@ -30,8 +30,8 @@ func (m *GatewayMonitor) SavePerformance(obj interface{}) (*GatewayPerformRespon
 	var code int
 	var rtn GatewayPerformResponse
 	var mURL = m.Host + "/rs/cluster/route/performance"
-	fmt.Print("mURL: ")
-	fmt.Println(mURL)
+	//fmt.Print("mURL: ")
+	//fmt.Println(mURL)
 	j := cm.GetJSONEncode(obj)
 	req, fail := cm.GetRequest(mURL, http.MethodPost, j)
 	if !fail {

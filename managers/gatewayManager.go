@@ -1,7 +1,7 @@
 package managers
 
 import (
-	"fmt"
+	//"fmt"
 	//"fmt"
 	"os"
 	"strconv"
@@ -40,8 +40,8 @@ func (gw *GatewayRoutes) GetGatewayRoute(getActive bool, route string, routeName
 	var rtnVal GatewayRouteURL
 	var rtn *[]cl.GatewayClusterRouteURL
 	crts := gw.Cache.GetRoutes(route)
-	fmt.Print("crts: ")
-	fmt.Println(crts)
+	//fmt.Print("crts: ")
+	//fmt.Println(crts)
 	if crts != nil && len(*crts) > 0 {
 		// work with cached routes and the delete
 		rtn = crts
@@ -119,10 +119,10 @@ func (gw *GatewayRoutes) ReadAndStore(route string) *[]cl.GatewayClusterRouteURL
 
 //HandleRefresh HandleRefresh
 func (gw *GatewayRoutes) HandleRefresh(route string) {
-	fmt.Print("CacheRefreshRate before if: ")
-	fmt.Println(gw.Cache.GetRrRate(route))
-	fmt.Print("getCacheRefreshRate before if: ")
-	fmt.Println(getCacheRefreshRate())
+	//fmt.Print("CacheRefreshRate before if: ")
+	//fmt.Println(gw.Cache.GetRrRate(route))
+	//fmt.Print("getCacheRefreshRate before if: ")
+	//fmt.Println(getCacheRefreshRate())
 	if gw.Cache.GetRrRate(route) >= getCacheRefreshRate() {
 		gw.Cache.SaveRrRate(route, 0)
 		//gw.CacheRefreshRate = 0

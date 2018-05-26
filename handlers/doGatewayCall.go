@@ -35,8 +35,8 @@ func doGatewayCall(p *passParams) *returnVals {
 						go sendErrors(p, rtnVals.rtnCode, err.Error())
 					} else {
 						rtnVals.rtn = string(respbody)
-						fmt.Print("Resp Body in doGatewayCall: ")
-						fmt.Println(rtnVals.rtn)
+						//fmt.Print("Resp Body in doGatewayCall: ")
+						//fmt.Println(rtnVals.rtn)
 						rtnVals.rtnCode = resp.StatusCode
 						if rtnVals.rtnCode != http.StatusOK {
 							go sendErrors(p, rtnVals.rtnCode, resp.Status)

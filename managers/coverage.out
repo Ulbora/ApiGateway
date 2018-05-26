@@ -1,5 +1,5 @@
 mode: set
-ApiGateway/managers/gatewayManager.go:39.107,45.35 6 1
+ApiGateway/managers/gatewayManager.go:39.107,45.35 4 1
 ApiGateway/managers/gatewayManager.go:54.2,54.32 1 1
 ApiGateway/managers/gatewayManager.go:69.2,69.16 1 1
 ApiGateway/managers/gatewayManager.go:45.35,49.3 2 1
@@ -20,7 +20,7 @@ ApiGateway/managers/gatewayManager.go:88.2,88.12 1 1
 ApiGateway/managers/gatewayManager.go:84.43,87.3 2 1
 ApiGateway/managers/gatewayManager.go:91.71,105.2 13 1
 ApiGateway/managers/gatewayManager.go:108.82,118.2 7 1
-ApiGateway/managers/gatewayManager.go:121.54,126.56 5 1
+ApiGateway/managers/gatewayManager.go:121.54,126.56 1 1
 ApiGateway/managers/gatewayManager.go:126.56,131.42 2 1
 ApiGateway/managers/gatewayManager.go:131.42,133.4 1 1
 ApiGateway/managers/gatewayManager.go:134.3,141.3 3 1

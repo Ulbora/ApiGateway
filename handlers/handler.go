@@ -145,8 +145,8 @@ func getRequest(method string, url string, body *[]byte) (*http.Request, bool) {
 func processServiceCall(req *http.Request) (*http.Response, string, bool) {
 	client := &http.Client{}
 	resp, cErr := client.Do(req)
-	fmt.Print("Service call resp: ")
-	fmt.Println(resp)
+	//fmt.Print("Service call resp: ")
+	//fmt.Println(resp)
 	var e string
 	var failed bool
 	if cErr != nil {
@@ -174,13 +174,13 @@ func tripBreaker(p *passParams) bool {
 	b.RestRouteID = p.rts.RouteID
 	b.RouteURIID = p.rts.URLID
 	b.Route = p.rts.Route
-	fmt.Print("breaker in trip: ")
-	fmt.Println(b)
+	//fmt.Print("breaker in trip: ")
+	//fmt.Println(b)
 
 	resp, code := p.clst.TripBreaker(&b)
 	p.gwr.ReadAndStore(p.rts.Route)
-	fmt.Print("trip resp: ")
-	fmt.Println(resp)
+	//fmt.Print("trip resp: ")
+	//fmt.Println(resp)
 	if !resp.Success || code != http.StatusOK {
 		fmt.Print("trip resp: ")
 		fmt.Println(resp)

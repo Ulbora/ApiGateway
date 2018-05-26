@@ -28,12 +28,12 @@ func (h *Handler) HandleGwRoute(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	route, rName, fpath := getPathParams(vars, r)
-	fmt.Print("route in gateway: ")
-	fmt.Println(route)
-	fmt.Print("rName: ")
-	fmt.Println(rName)
-	fmt.Print("fpath: ")
-	fmt.Println(fpath)
+	//fmt.Print("route in gateway: ")
+	//fmt.Println(route)
+	//fmt.Print("rName: ")
+	//fmt.Println(rName)
+	//fmt.Print("fpath: ")
+	//fmt.Println(fpath)
 
 	code := r.URL.Query()
 	var activeRoute = true
@@ -41,21 +41,21 @@ func (h *Handler) HandleGwRoute(w http.ResponseWriter, r *http.Request) {
 		activeRoute = false
 	}
 	rts := gw.GetGatewayRoute(activeRoute, route, rName)
-	fmt.Print("rts: ")
-	fmt.Println(rts)
+	//fmt.Print("rts: ")
+	//fmt.Println(rts)
 	if rts.URL == "" {
 		fmt.Println("No route found in gateway")
 		rtnCode = http.StatusNotFound // rts.OpenFailCode
 		rtn = "bad route"
-		fmt.Print("found routes: ")
-		fmt.Println(rts)
+		//fmt.Print("found routes: ")
+		//fmt.Println(rts)
 	} else if rts.CircuitOpen {
 		fmt.Println("Circuit breaker is open for this route")
 		rtnCode = rts.OpenFailCode
 		rtn = "Circuit open"
 		gw.ReadAndStore(route)
-		fmt.Print("found route: ")
-		fmt.Println(rts)
+		//fmt.Print("found route: ")
+		//fmt.Println(rts)
 	} else {
 		var clstRt cst.GatewayRoutes
 		var er e.GatewayErrors
@@ -80,12 +80,9 @@ func (h *Handler) HandleGwRoute(w http.ResponseWriter, r *http.Request) {
 		rtn = rtns.rtn
 		eTime1 = rtns.eTime1
 		sTime2 = rtns.sTime2
-		fmt.Print("rtns from gateway: ")
-		fmt.Println(rtns)
+		//fmt.Print("rtns from gateway: ")
+		//fmt.Println(rtns)
 
-		// switch r.Method {
-
-		// }
 	}
 
 	eTime2 = time.Now()

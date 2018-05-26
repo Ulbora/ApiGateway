@@ -6,15 +6,17 @@
 
 
 
-API Gateway (runs inside customer's network)
+API Gateway (runs inside user's private network)
 ==============
 
-A lightweight API Gateway that runs inside your network with a self service portal at: http://www.myapigateway.com
+Get a **free** account on the **Free Tier** at: http://www.myapigateway.com
 
-Copyright (C) 2016 Ulbora Labs Inc. (www.ulboralabs.com)
+A lightweight API Gateway that runs inside a user's private network with a self service portal at: http://www.myapigateway.com
+
+Copyright (C) 2018 Ulbora Labs LLC. (www.ulboralabs.com)
 All rights reserved.
 
-Copyright (C) 2016 Ken Williamson
+Copyright (C) 2018 Ken Williamson
 All rights reserved.
 
 # Run on

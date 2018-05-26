@@ -59,8 +59,8 @@ func (gw *GatewayRoutes) GetClusterGwRoutes(route string) (*[]GatewayClusterRout
 	var code int
 	var rtn = make([]GatewayClusterRouteURL, 0)
 	var clustURL = gw.Host + "/rs/cluster/routes/" + route
-	fmt.Print("clustURL: ")
-	fmt.Println(clustURL)
+	//fmt.Print("clustURL: ")
+	//fmt.Println(clustURL)
 	req, fail := cm.GetRequest(clustURL, http.MethodGet, nil)
 	if !fail {
 		//var f2 bool
@@ -72,8 +72,8 @@ func (gw *GatewayRoutes) GetClusterGwRoutes(route string) (*[]GatewayClusterRout
 		fmt.Println("get failed")
 		code = http.StatusBadRequest
 	}
-	fmt.Print("rtn: ")
-	fmt.Println(rtn)
+	//fmt.Print("rtn: ")
+	//fmt.Println(rtn)
 	return &rtn, code
 }
 
@@ -83,8 +83,8 @@ func (gw *GatewayRoutes) ClearClusterGwRoutes(route string) (*GatewayClusterResp
 	//var rtn = make([]GatewayClusterRouteURL, 0)
 	var rtn GatewayClusterResponse
 	var clustURL = gw.Host + "/rs/cluster/routes/clear/" + route
-	fmt.Print("clustURL: ")
-	fmt.Println(clustURL)
+	//fmt.Print("clustURL: ")
+	//fmt.Println(clustURL)
 	req, fail := cm.GetRequest(clustURL, http.MethodDelete, nil)
 	if !fail {
 		cid := strconv.FormatInt(gw.ClientID, 10)
@@ -103,19 +103,19 @@ func (gw *GatewayRoutes) TripBreaker(obj interface{}) (*GatewayClusterResponse, 
 	var code int
 	var rtn GatewayClusterResponse
 	var tpURL = gw.Host + "/rs/cluster/route/trip"
-	fmt.Print("tpURL: ")
-	fmt.Println(tpURL)
+	//fmt.Print("tpURL: ")
+	//fmt.Println(tpURL)
 	j := cm.GetJSONEncode(obj)
 	req, fail := cm.GetRequest(tpURL, http.MethodPost, j)
-	fmt.Print("req: ")
-	fmt.Println(req)
+	//fmt.Print("req: ")
+	//fmt.Println(req)
 	if !fail {
 		cid := strconv.FormatInt(gw.ClientID, 10)
 		req.Header.Set("u-client-id", cid)
 		req.Header.Set("u-api-key", gw.APIKey)
 		req.Header.Set("Content-Type", "application/json")
-		fmt.Print("headers: ")
-		fmt.Println(req.Header)
+		//fmt.Print("headers: ")
+		//fmt.Println(req.Header)
 		code = cm.ProcessServiceCall(req, &rtn)
 	} else {
 		fmt.Println("trip breaker failed")
@@ -129,8 +129,8 @@ func (gw *GatewayRoutes) ResetBreaker(obj interface{}) (*GatewayClusterResponse,
 	var code int
 	var rtn GatewayClusterResponse
 	var rURL = gw.Host + "/rs/cluster/route/reset"
-	fmt.Print("rURL: ")
-	fmt.Println(rURL)
+	//fmt.Print("rURL: ")
+	//fmt.Println(rURL)
 	j := cm.GetJSONEncode(obj)
 	req, fail := cm.GetRequest(rURL, http.MethodPost, j)
 	if !fail {

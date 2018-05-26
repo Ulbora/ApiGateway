@@ -44,14 +44,14 @@ func ProcessRespose(resp *http.Response, obj interface{}) bool {
 	//fmt.Print("resp in processResponse: ")
 	//fmt.Println(resp)
 	if resp != nil {
-		fmt.Print("resp body: ")
-		fmt.Println(resp.Body)
+		//fmt.Print("resp body: ")
+		//fmt.Println(resp.Body)
 		decoder := json.NewDecoder(resp.Body)
 		var err error
 		if obj != nil {
 			err = decoder.Decode(obj)
-			fmt.Print("response obj: ")
-			fmt.Println(obj)
+			//fmt.Print("response obj: ")
+			//fmt.Println(obj)
 		}
 		if err != nil {
 			fmt.Print("response err: ")
@@ -78,8 +78,8 @@ func ProcessServiceCall(req *http.Request, obj interface{}) int {
 	var code int
 	client := &http.Client{}
 	resp, cErr := client.Do(req)
-	fmt.Print("resp: ")
-	fmt.Println(resp)
+	//fmt.Print("resp: ")
+	//fmt.Println(resp)
 	if cErr != nil {
 		fmt.Print("Service err: ")
 		fmt.Println(cErr)

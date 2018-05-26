@@ -44,7 +44,8 @@ func main() {
 	fmt.Println("Api Gateway running inside network on port 3020!")
 	router := mux.NewRouter()
 	//gateway routes
-	router.HandleFunc("/np/{route}/{rname}/{fpath:[^.]+}", h.HandleGwRoute)
+	//disgard router.HandleFunc("/np/{route}/{rname}/{fpath:[^.]+}", h.HandleGwRoute)
+	router.HandleFunc("/np/{route}/{rname}/{fpath:[^ ]+}", h.HandleGwRoute)
 	router.HandleFunc("/{route}/{fpath:[^ ]+}", h.HandleGwRoute)
 	//disgard -- router.HandleFunc("/{route}/{fpath:[^.]+}", handleGwRoute)
 	router.HandleFunc("/{route}", h.HandleGwRoute)
