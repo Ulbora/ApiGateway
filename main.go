@@ -16,8 +16,13 @@ var c ch.RouteCache
 func main() {
 	var cid string
 	var key string
-	cid = os.Args[1]
-	key = os.Args[2]
+	fmt.Print("args: ")
+	fmt.Println(len(os.Args))
+	if len(os.Args) == 3 {
+		cid = os.Args[1]
+		key = os.Args[2]
+	}
+
 	//fmt.Print("cid: ")
 	//fmt.Println(cid)
 
